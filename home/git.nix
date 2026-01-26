@@ -1,5 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
+let
+  isLinux = pkgs.stdenv.isLinux;
+  isDarwin = pkgs.stdenv.isDarwin;
+in
 {
   programs.git = {
     enable = true;
@@ -13,7 +17,7 @@
         light = false;
         side-by-side = true;
         line-numbers = true;
-        syntax-theme = "Catppuccin Mocha";
+        syntax-theme = "Catppuccin Macchiato";
       };
     };
 
@@ -24,9 +28,16 @@
       merge.conflictstyle = "diff3";
       diff.colorMoved = "default";
       core.editor = "nvim";
+      core.autocrlf = "input";
+      http.postBuffer = 524288000;
 
-      # Credential helper using gnome-keyring
-      credential.helper = "${pkgs.gitFull}/bin/git-credential-libsecret";
+      # Platform-specific credential helpers
+      credential.helper =
+        if isDarwin then "osxkeychain"
+        else "${pkgs.gitFull}/bin/git-credential-libsecret";
+    } // lib.optionalAttrs isDarwin {
+      # Azure DevOps on macOS
+      "credential \"https://dev.azure.com\"".useHttpPath = true;
     };
 
     aliases = {
@@ -72,11 +83,11 @@
     settings = {
       gui = {
         theme = {
-          activeBorderColor = [ "#cba6f7" "bold" ];
-          inactiveBorderColor = [ "#6c7086" ];
-          selectedLineBgColor = [ "#313244" ];
-          cherryPickedCommitBgColor = [ "#45475a" ];
-          cherryPickedCommitFgColor = [ "#cba6f7" ];
+          activeBorderColor = [ "#c6a0f6" "bold" ];
+          inactiveBorderColor = [ "#6e738d" ];
+          selectedLineBgColor = [ "#363a4f" ];
+          cherryPickedCommitBgColor = [ "#494d64" ];
+          cherryPickedCommitFgColor = [ "#c6a0f6" ];
         };
         showIcons = true;
       };

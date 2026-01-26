@@ -8,7 +8,7 @@ in
     enable = true;
 
     theme = spicePkgs.themes.catppuccin;
-    colorScheme = "mocha";
+    colorScheme = "macchiato";
 
     enabledExtensions = with spicePkgs.extensions; [
       adblock

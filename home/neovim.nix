@@ -1,7 +1,11 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
+let
+  isLinux = pkgs.stdenv.isLinux;
+in
 {
-  # Neovim is installed system-wide in modules/packages/cli.nix
+  # Neovim is installed system-wide in modules/packages/cli.nix (on NixOS)
+  # On macOS, install via: nix profile install nixpkgs#neovim
   # This module creates a symlink to the dotfiles config
 
   # Symlink neovim config (mutable, editable without rebuild)
@@ -13,9 +17,8 @@
 
   # Dependencies for neovim plugins
   home.packages = with pkgs; [
-    # Clipboard support
-    wl-clipboard
-    xclip
+    # Neovim itself (for standalone HM on macOS)
+    neovim
 
     # Telescope dependencies
     ripgrep
@@ -28,5 +31,9 @@
     nodejs
     python3
     cargo
+  ] ++ lib.optionals isLinux [
+    # Clipboard support (Linux only)
+    wl-clipboard
+    xclip
   ];
 }

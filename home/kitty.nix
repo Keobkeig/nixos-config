@@ -9,7 +9,7 @@
     };
 
     settings = {
-      # Catppuccin Mocha colors (via catppuccin HM module)
+      # Catppuccin Macchiato colors (via catppuccin HM module)
       # Colors are auto-applied by catppuccin.enable
 
       # Window

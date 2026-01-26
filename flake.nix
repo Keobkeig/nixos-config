@@ -31,20 +31,7 @@
 
   outputs = { self, nixpkgs, home-manager, nix-cachyos-kernel, dms, catppuccin, spicetify-nix, zen-browser, ... }@inputs:
   let
-    system = "x86_64-linux";
-
-    pkgs = import nixpkgs {
-      inherit system;
-      config = {
-        allowUnfree = true;
-        nvidia.acceptLicense = true;
-      };
-      overlays = [
-        nix-cachyos-kernel.overlays.default
-      ];
-    };
-
-    # User-specific configuration
+    # User-specific configuration (shared across platforms)
     userConfig = {
       # Directories for tmux-sessionizer to search
       sessionizerPaths = [
@@ -54,11 +41,30 @@
         "~/nixos-config"
       ];
     };
+
+    # NixOS-specific pkgs
+    linuxPkgs = import nixpkgs {
+      system = "x86_64-linux";
+      config = {
+        allowUnfree = true;
+        nvidia.acceptLicense = true;
+      };
+      overlays = [
+        nix-cachyos-kernel.overlays.default
+      ];
+    };
+
+    # macOS-specific pkgs
+    darwinPkgs = import nixpkgs {
+      system = "aarch64-darwin";
+      config.allowUnfree = true;
+    };
   in
   {
+    # NixOS (integrated Home Manager)
     nixosConfigurations.workstation = nixpkgs.lib.nixosSystem {
-      inherit system;
-      specialArgs = { inherit inputs pkgs; };
+      system = "x86_64-linux";
+      specialArgs = { inherit inputs; pkgs = linuxPkgs; };
       modules = [
         ./hosts/workstation
 
@@ -66,10 +72,17 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit inputs userConfig; };
+          home-manager.extraSpecialArgs = { inherit inputs userConfig; isNixOS = true; };
           home-manager.users.rxue = import ./home;
         }
       ];
+    };
+
+    # macOS (standalone Home Manager)
+    homeConfigurations."rxue@macbook" = home-manager.lib.homeManagerConfiguration {
+      pkgs = darwinPkgs;
+      extraSpecialArgs = { inherit inputs userConfig; isNixOS = false; };
+      modules = [ ./home ];
     };
   };
 }
