@@ -16,6 +16,7 @@ in
     # NixOS-only modules (these inputs aren't available on macOS)
     inputs.spicetify-nix.homeManagerModules.default
     inputs.dms.homeManagerModules.default
+    ./dms.nix
     ./spicetify.nix
     ./zathura.nix
     ./gaming.nix
@@ -110,12 +111,6 @@ in
     accent = "mauve";
   };
 
-  # DankMaterialShell (NixOS only)
-  programs.dms = lib.mkIf isNixOS {
-    enable = true;
-    # DMS replaces: waybar, mako, fuzzel, swaylock, swayidle
-  };
-
   # Readline (arrow key history search)
   programs.readline = {
     enable = true;
@@ -130,7 +125,6 @@ in
   programs.btop = {
     enable = true;
     settings = {
-      color_theme = "catppuccin_macchiato";
       theme_background = false;
       vim_keys = true;
     };
@@ -141,11 +135,10 @@ in
   programs.fastfetch = {
     enable = true;
   };
-  catppuccin.fastfetch.enable = true;
 
-  # Fish shell
+  # Fish shell (disabled - using zsh with p10k)
   programs.fish = {
-    enable = true;
+    enable = false;
     interactiveShellInit = ''
       set fish_greeting  # Disable greeting
 
@@ -243,126 +236,10 @@ in
   };
 
   # Starship prompt
-  programs.starship = {
-    enable = true;
-    enableFishIntegration = true;
-    enableZshIntegration = true;
-    settings = {
-      format = lib.concatStrings [
-        "$directory"
-        "$git_branch"
-        "$git_status"
-        "$python"
-        "$rust"
-        "$nodejs"
-        "$golang"
-        "$lua"
-        "$nix_shell"
-        "$cmd_duration"
-        "$line_break"
-        "$character"
-      ];
-
-      directory = {
-        style = "bold mauve";
-        truncation_length = 3;
-        truncate_to_repo = true;
-      };
-
-      git_branch = {
-        format = "[$symbol$branch]($style) ";
-        symbol = " ";
-        style = "bold pink";
-      };
-
-      git_status = {
-        format = "[$all_status$ahead_behind]($style) ";
-        style = "bold red";
-      };
-
-      python = {
-        format = "[$symbol($version )]($style)";
-        symbol = " ";
-        style = "bold yellow";
-      };
-
-      rust = {
-        format = "[$symbol($version )]($style)";
-        symbol = " ";
-        style = "bold peach";
-      };
-
-      nodejs = {
-        format = "[$symbol($version )]($style)";
-        symbol = " ";
-        style = "bold green";
-      };
-
-      golang = {
-        format = "[$symbol($version )]($style)";
-        symbol = " ";
-        style = "bold sky";
-      };
-
-      lua = {
-        format = "[$symbol($version )]($style)";
-        symbol = " ";
-        style = "bold blue";
-      };
-
-      nix_shell = {
-        format = "[$symbol$state]($style) ";
-        symbol = " ";
-        style = "bold lavender";
-      };
-
-      cmd_duration = {
-        format = "[$duration]($style) ";
-        style = "bold subtext0";
-        min_time = 2000;
-      };
-
-      character = {
-        success_symbol = "[❯](bold green)";
-        error_symbol = "[❯](bold red)";
-      };
-
-      palette = "catppuccin_macchiato";
-      palettes.catppuccin_macchiato = {
-        rosewater = "#f4dbd6";
-        flamingo = "#f0c6c6";
-        pink = "#f5bde6";
-        mauve = "#c6a0f6";
-        red = "#ed8796";
-        maroon = "#ee99a0";
-        peach = "#f5a97f";
-        yellow = "#eed49f";
-        green = "#a6da95";
-        teal = "#8bd5ca";
-        sky = "#91d7e3";
-        sapphire = "#7dc4e4";
-        blue = "#8aadf4";
-        lavender = "#b7bdf8";
-        text = "#cad3f5";
-        subtext1 = "#b8c0e0";
-        subtext0 = "#a5adcb";
-        overlay2 = "#939ab7";
-        overlay1 = "#8087a2";
-        overlay0 = "#6e738d";
-        surface2 = "#5b6078";
-        surface1 = "#494d64";
-        surface0 = "#363a4f";
-        base = "#24273a";
-        mantle = "#1e2030";
-        crust = "#181926";
-      };
-    };
-  };
-
   # Tmux
   programs.tmux = {
     enable = true;
-    shell = "${pkgs.fish}/bin/fish";
+    shell = "${pkgs.zsh}/bin/zsh";
     terminal = "tmux-256color";
     prefix = "C-a";
     baseIndex = 1;
@@ -533,7 +410,7 @@ in
   # fzf
   programs.fzf = {
     enable = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
     enableZshIntegration = true;
     defaultCommand = "fd --type f --hidden --follow --exclude .git";
     defaultOptions = [
@@ -557,7 +434,7 @@ in
   # Zoxide
   programs.zoxide = {
     enable = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
     enableZshIntegration = true;
   };
 

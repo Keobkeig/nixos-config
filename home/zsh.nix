@@ -1,11 +1,29 @@
 { config, pkgs, lib, ... }:
 
 {
+  # Powerlevel10k config file
+  home.file.".p10k.zsh".source = ../dotfiles/zsh/p10k.zsh;
+
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     enableCompletion = true;
+
+    plugins = [
+      # Powerlevel10k prompt
+      {
+        name = "powerlevel10k";
+        src = pkgs.zsh-powerlevel10k;
+        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+      }
+      # zsh-autocomplete (shows completion menu as you type)
+      {
+        name = "zsh-autocomplete";
+        src = pkgs.zsh-autocomplete;
+        file = "share/zsh-autocomplete/zsh-autocomplete.plugin.zsh";
+      }
+    ];
 
     history = {
       size = 10000;
@@ -71,9 +89,17 @@
       # Project-specific
       auv = "~/cuauv/workspaces/repo/docker/auv-docker.py";
       rv = "docker run -i --init -e NETID=rx77 --rm -v \"$PWD\":/root ghcr.io/sampsyo/cs3410-infra";
+
+      # Config shortcuts
+      nvimconfig = "code ~/.config/nvim/";
     };
 
-    initExtra = ''
+    initContent = ''
+      # Enable Powerlevel10k instant prompt
+      if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
+        source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
+      fi
+
       # Sessionizer keybind (Ctrl+F)
       bindkey -s ^f "tmux-sessionizer\n"
 
@@ -102,8 +128,21 @@
       if [ -d "/opt/homebrew" ]; then
         export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
         export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+        export PATH="/opt/homebrew/Cellar/openvpn/2.6.10/sbin:$PATH"
         export OPENSSL_ROOT_DIR="/opt/homebrew/opt/openssl@3"
+
+        # Terraform completion
+        if command -v terraform &> /dev/null; then
+          autoload -U +X bashcompinit && bashcompinit
+          complete -o nospace -C /opt/homebrew/bin/terraform terraform
+        fi
       fi
+
+      # Spicetify
+      [ -d "$HOME/.spicetify" ] && export PATH="$HOME/.spicetify:$PATH"
+
+      # opencode
+      [ -d "$HOME/.opencode/bin" ] && export PATH="$HOME/.opencode/bin:$PATH"
 
       # Google Cloud SDK
       [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ] && source "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"
@@ -116,6 +155,9 @@
 
       # Terminal
       export TERM=xterm-256color
+
+      # Load Powerlevel10k config
+      [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
     '';
   };
 }

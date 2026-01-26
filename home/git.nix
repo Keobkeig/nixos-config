@@ -7,50 +7,6 @@ in
 {
   programs.git = {
     enable = true;
-    userName = "Richie Xue";
-    userEmail = "angela.xue3@gmail.com";
-
-    delta = {
-      enable = true;
-      options = {
-        navigate = true;
-        light = false;
-        side-by-side = true;
-        line-numbers = true;
-        syntax-theme = "Catppuccin Macchiato";
-      };
-    };
-
-    extraConfig = {
-      init.defaultBranch = "main";
-      pull.rebase = true;
-      push.autoSetupRemote = true;
-      merge.conflictstyle = "diff3";
-      diff.colorMoved = "default";
-      core.editor = "nvim";
-      core.autocrlf = "input";
-      http.postBuffer = 524288000;
-
-      # Platform-specific credential helpers
-      credential.helper =
-        if isDarwin then "osxkeychain"
-        else "${pkgs.gitFull}/bin/git-credential-libsecret";
-    } // lib.optionalAttrs isDarwin {
-      # Azure DevOps on macOS
-      "credential \"https://dev.azure.com\"".useHttpPath = true;
-    };
-
-    aliases = {
-      co = "checkout";
-      br = "branch";
-      ci = "commit";
-      st = "status";
-      unstage = "reset HEAD --";
-      last = "log -1 HEAD";
-      lg = "log --oneline --graph --decorate";
-      amend = "commit --amend --no-edit";
-      pushf = "push --force-with-lease";
-    };
 
     ignores = [
       ".DS_Store"
@@ -68,6 +24,53 @@ in
       "result"
       "result-*"
     ];
+
+    settings = {
+      user = {
+        name = "Richie Xue";
+        email = "angela.xue3@gmail.com";
+      };
+
+      init.defaultBranch = "main";
+      pull.rebase = true;
+      push.autoSetupRemote = true;
+      merge.conflictstyle = "diff3";
+      diff.colorMoved = "default";
+      core.editor = "nvim";
+      core.autocrlf = "input";
+      http.postBuffer = 524288000;
+
+      credential.helper =
+        if isDarwin then "osxkeychain"
+        else "${pkgs.gitFull}/bin/git-credential-libsecret";
+
+      alias = {
+        co = "checkout";
+        br = "branch";
+        ci = "commit";
+        st = "status";
+        unstage = "reset HEAD --";
+        last = "log -1 HEAD";
+        lg = "log --oneline --graph --decorate";
+        amend = "commit --amend --no-edit";
+        pushf = "push --force-with-lease";
+      };
+    } // lib.optionalAttrs isDarwin {
+      "credential \"https://dev.azure.com\"".useHttpPath = true;
+    };
+  };
+
+  # Delta (git pager)
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      navigate = true;
+      light = false;
+      side-by-side = true;
+      line-numbers = true;
+      syntax-theme = "Catppuccin Macchiato";
+    };
   };
 
   programs.gh = {
