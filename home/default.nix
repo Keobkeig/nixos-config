@@ -431,11 +431,12 @@ in
     nix-direnv.enable = true;
   };
 
-  # Zoxide
+  # Zoxide (smart cd replacement)
   programs.zoxide = {
     enable = true;
     enableFishIntegration = false;
     enableZshIntegration = true;
+    options = [ "--cmd" "cd" ];  # Replace cd with zoxide
   };
 
   # GTK theme (Linux only)
