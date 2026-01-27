@@ -35,10 +35,8 @@
     userConfig = {
       # Directories for tmux-sessionizer to search
       sessionizerPaths = [
-        "~/Documents/Programming"
+        "/Users/Programming"
         "~/Documents/Textbooks"
-        "~/Projects"
-        "~/nixos-config"
       ];
     };
 

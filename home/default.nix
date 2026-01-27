@@ -371,7 +371,7 @@ in
     ];
   };
 
-  # Sessionizer script
+  # Sessionizer script (matches original ~/.dotfiles/tmux/scripts/tmux-sessionizer)
   home.file.".local/scripts/tmux-sessionizer" = {
     executable = true;
     text = ''

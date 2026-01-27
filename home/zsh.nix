@@ -101,9 +101,6 @@
         source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
       fi
 
-      # Sessionizer keybind (Ctrl+F)
-      bindkey -s ^f "tmux-sessionizer\n"
-
       # opam init (if exists)
       [[ ! -r ~/.opam/opam-init/init.zsh ]] || source ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null
 
@@ -164,6 +161,9 @@
       if [ -f "/opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh" ]; then
         source /opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
       fi
+
+      # Sessionizer keybind (Ctrl+F) - after p10k loads
+      bindkey -s '^f' 'tmux-sessionizer\n'
     '';
   };
 }
