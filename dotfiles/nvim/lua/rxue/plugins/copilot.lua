@@ -10,7 +10,7 @@ return {
         hide_during_completion = true,
         debounce = 75,
         keymap = {
-          accept = "<M-l>", -- Alt+l to accept
+          accept = "<C-y>", -- Ctrl+y to accept
           accept_word = "<M-w>", -- Alt+w to accept word
           accept_line = "<M-j>", -- Alt+j to accept line
           next = "<M-]>", -- Alt+] for next suggestion
