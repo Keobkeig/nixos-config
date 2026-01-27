@@ -10,18 +10,19 @@
     syntaxHighlighting.enable = true;
     enableCompletion = true;
 
+    # Oh My Zsh
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ "git" ];
+      theme = "";  # Disable oh-my-zsh theme - using powerlevel10k via plugins
+    };
+
     plugins = [
       # Powerlevel10k prompt
       {
         name = "powerlevel10k";
         src = pkgs.zsh-powerlevel10k;
         file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-      }
-      # zsh-autocomplete (shows completion menu as you type)
-      {
-        name = "zsh-autocomplete";
-        src = pkgs.zsh-autocomplete;
-        file = "share/zsh-autocomplete/zsh-autocomplete.plugin.zsh";
       }
     ];
 
@@ -158,6 +159,11 @@
 
       # Load Powerlevel10k config
       [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+
+      # zsh-autocomplete (Homebrew - matches old working config)
+      if [ -f "/opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh" ]; then
+        source /opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+      fi
     '';
   };
 }
