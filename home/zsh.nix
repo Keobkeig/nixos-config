@@ -10,6 +10,14 @@
     syntaxHighlighting.enable = true;
     enableCompletion = true;
 
+    # Source nix-daemon.sh to set up PATH for nix profile binaries (zoxide, etc.)
+    # /etc/zshenv only does this for SSH connections, so we need it for local terminals
+    envExtra = ''
+      if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+      fi
+    '';
+
     # Oh My Zsh
     oh-my-zsh = {
       enable = true;
