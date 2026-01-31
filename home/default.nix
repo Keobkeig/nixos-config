@@ -58,6 +58,7 @@ in
     # Container tools
     docker-compose
     lazydocker
+    lazygit
 
     # Cloud
     awscli2
@@ -249,6 +250,10 @@ in
     keyMode = "vi";
 
     extraConfig = ''
+      # Override sensible plugin's default-command to use zsh directly
+      # (reattach-to-user-namespace not needed on modern macOS with set-clipboard on)
+      set -g default-command "${pkgs.zsh}/bin/zsh"
+
       # True color and clipboard
       set -ga terminal-overrides ",*:RGB"
       set -g set-clipboard on
