@@ -3,6 +3,7 @@
 let
   isLinux = pkgs.stdenv.isLinux;
   isDarwin = pkgs.stdenv.isDarwin;
+  repoPath = "${config.home.homeDirectory}/nixos-config";
 in
 {
   programs.git = {
@@ -83,23 +84,9 @@ in
 
   programs.lazygit = {
     enable = true;
-    settings = {
-      gui = {
-        theme = {
-          activeBorderColor = [ "#c6a0f6" "bold" ];
-          inactiveBorderColor = [ "#6e738d" ];
-          selectedLineBgColor = [ "#363a4f" ];
-          cherryPickedCommitBgColor = [ "#494d64" ];
-          cherryPickedCommitFgColor = [ "#c6a0f6" ];
-        };
-        showIcons = true;
-      };
-      git = {
-        paging = {
-          colorArg = "always";
-          pager = "delta --dark --paging=never";
-        };
-      };
-    };
   };
+
+  # Lazygit config symlink (macOS uses ~/Library/Application Support/lazygit/)
+  home.file."${if isDarwin then "Library/Application Support/lazygit/config.yml" else ".config/lazygit/config.yml"}".source =
+    config.lib.file.mkOutOfStoreSymlink "${repoPath}/dotfiles/lazygit/config.yml";
 }

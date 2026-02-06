@@ -1,8 +1,9 @@
 { config, pkgs, lib, ... }:
 
 {
-  # Powerlevel10k config file
-  home.file.".p10k.zsh".source = ../dotfiles/zsh/p10k.zsh;
+  # Powerlevel10k config file (symlink for edit-without-rebuild)
+  home.file.".p10k.zsh".source = config.lib.file.mkOutOfStoreSymlink
+    "${config.home.homeDirectory}/nixos-config/dotfiles/zsh/p10k.zsh";
 
   programs.zsh = {
     enable = true;
@@ -42,136 +43,10 @@
       path = "${config.xdg.dataHome}/zsh/history";
     };
 
-    shellAliases = {
-      # Navigation
-      ".." = "cd ..";
-      "..." = "cd ../..";
-      "...." = "cd ../../..";
-
-      # eza aliases
-      ls = "eza --icons";
-      ll = "eza -l --icons";
-      la = "eza -la --icons";
-      lt = "eza --tree --icons";
-      l = "eza -l --icons";
-
-      # Git
-      g = "git";
-      gs = "git status";
-      ga = "git add";
-      gc = "git commit";
-      gp = "git push";
-      gl = "git pull";
-      gd = "git diff";
-      gco = "git checkout";
-      gb = "git branch";
-      glog = "git log --oneline --graph";
-
-      # Docker
-      d = "docker";
-      dc = "docker compose";
-      dps = "docker ps";
-
-      # Misc
-      cat = "bat";
-      vim = "nvim";
-      vi = "nvim";
-      c = "clear";
-      tree = "eza --tree --icons";
-
-      # NixOS
-      nrs = "sudo nixos-rebuild switch --flake ~/nixos-config#workstation";
-      nrt = "sudo nixos-rebuild test --flake ~/nixos-config#workstation";
-      nfu = "nix flake update";
-
-      # Home Manager (macOS)
-      hms = "home-manager switch --flake ~/nixos-config#rxue@macbook";
-
-      # CTF/Security tools (macOS paths)
-      potfile = "cat /opt/homebrew/Cellar/hashcat/6.2.6_1/share/hashcat/hashcat.potfile";
-      stegsolve = "cd ~/Documents/stegsolve-macos/ && java -jar stegsolve.jar";
-      unshadow = "/opt/homebrew/Cellar/john-jumbo/1.9.0_1/share/john/unshadow";
-      zip2john = "/opt/homebrew/Cellar/john-jumbo/1.9.0_1/share/john/zip2john";
-      rar2john = "/opt/homebrew/Cellar/john-jumbo/1.9.0_1/share/john/rar2john";
-      ssh2john = "/opt/homebrew/Cellar/john-jumbo/1.9.0_1/share/john/ssh2john.py";
-
-      # Project-specific
-      auv = "~/cuauv/workspaces/repo/docker/auv-docker.py";
-      rv = "docker run -i --init -e NETID=rx77 --rm -v \"$PWD\":/root ghcr.io/sampsyo/cs3410-infra";
-
-      # Config shortcuts
-      nvimconfig = "code ~/.config/nvim/";
-    };
-
     initContent = ''
-      # Enable Powerlevel10k instant prompt
-      if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
-        source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
-      fi
-
-      # opam init (if exists)
-      [[ ! -r ~/.opam/opam-init/init.zsh ]] || source ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null
-
-      # Conda init (if exists on macOS)
-      if [ -f "/opt/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/opt/miniconda3/etc/profile.d/conda.sh"
-      fi
-
-      # Bun
-      if [ -d "$HOME/.bun" ]; then
-        export BUN_INSTALL="$HOME/.bun"
-        export PATH="$BUN_INSTALL/bin:$PATH"
-        [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-      fi
-
-      # pnpm
-      if [ -d "$HOME/Library/pnpm" ]; then
-        export PNPM_HOME="$HOME/Library/pnpm"
-        export PATH="$PNPM_HOME:$PATH"
-      fi
-
-      # Homebrew paths (macOS)
-      if [ -d "/opt/homebrew" ]; then
-        export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-        export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
-        export PATH="/opt/homebrew/Cellar/openvpn/2.6.10/sbin:$PATH"
-        export OPENSSL_ROOT_DIR="/opt/homebrew/opt/openssl@3"
-
-        # Terraform completion
-        if command -v terraform &> /dev/null; then
-          autoload -U +X bashcompinit && bashcompinit
-          complete -o nospace -C /opt/homebrew/bin/terraform terraform
-        fi
-      fi
-
-      # Spicetify
-      [ -d "$HOME/.spicetify" ] && export PATH="$HOME/.spicetify:$PATH"
-
-      # opencode
-      [ -d "$HOME/.opencode/bin" ] && export PATH="$HOME/.opencode/bin:$PATH"
-
-      # Google Cloud SDK
-      [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ] && source "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"
-      [ -f "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc"
-
-      # Additional PATH entries
-      export PATH="$HOME/.local/scripts:$PATH"
-      export PATH="$HOME/.local/bin:$PATH"
-      export PATH="$HOME/.cargo/bin:$PATH"
-
-      # Terminal
-      export TERM=xterm-256color
-
-      # Load Powerlevel10k config
-      [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
-
-      # zsh-autocomplete (Homebrew - matches old working config)
-      if [ -f "/opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh" ]; then
-        source /opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
-      fi
-
-      # Sessionizer keybind (Ctrl+F) - after p10k loads
-      bindkey -s '^f' 'tmux-sessionizer\n'
+      # Load aliases and init from dotfiles (editable without rebuild)
+      source ~/nixos-config/dotfiles/zsh/aliases.zsh
+      source ~/nixos-config/dotfiles/zsh/init.zsh
     '';
   };
 }

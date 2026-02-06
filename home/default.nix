@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, userConfig, isNixOS, ... }:
+{ config, pkgs, lib, inputs, isNixOS, ... }:
 
 let
   isLinux = pkgs.stdenv.isLinux;
@@ -251,112 +251,10 @@ in
 
     extraConfig = ''
       # Override sensible plugin's default-command to use zsh directly
-      # (reattach-to-user-namespace not needed on modern macOS with set-clipboard on)
       set -g default-command "${pkgs.zsh}/bin/zsh"
 
-      # True color and clipboard
-      set -ga terminal-overrides ",*:RGB"
-      set -g set-clipboard on
-
-      # Vim like pane selection
-      bind h select-pane -L
-      bind j select-pane -D
-      bind k select-pane -U
-      bind l select-pane -R
-
-      # Split panes with | and -
-      unbind %
-      bind | split-window -h -c "#{pane_current_path}"
-      unbind '"'
-      bind - split-window -v -c "#{pane_current_path}"
-
-      # Reload config
-      unbind r
-      bind r source-file ~/.config/tmux/tmux.conf
-
-      # Window/pane indexing
-      set -g pane-base-index 1
-      set-window-option -g pane-base-index 1
-      set-option -g renumber-windows on
-
-      # Vim-like copy/paste
-      set-window-option -g mode-keys vi
-      bind-key -T copy-mode-vi v send-keys -X begin-selection
-      bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
-      bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
-      unbind -T copy-mode-vi MouseDragEnd1Pane
-
-      # Alt+hjkl to switch panes (vim-style)
-      bind -n M-h select-pane -L
-      bind -n M-j select-pane -D
-      bind -n M-k select-pane -U
-      bind -n M-l select-pane -R
-
-      # Alt+number to select window
-      bind -n M-1 select-window -t 1
-      bind -n M-2 select-window -t 2
-      bind -n M-3 select-window -t 3
-      bind -n M-4 select-window -t 4
-      bind -n M-5 select-window -t 5
-      bind -n M-6 select-window -t 6
-      bind -n M-7 select-window -t 7
-      bind -n M-8 select-window -t 8
-      bind -n M-9 select-window -t 9
-
-      # Catppuccin Macchiato theme colors
-      thm_bg="#24273a"
-      thm_fg="#cad3f5"
-      thm_cyan="#91d7e3"
-      thm_black="#181926"
-      thm_gray="#363a4f"
-      thm_magenta="#c6a0f6"
-      thm_pink="#f5bde6"
-      thm_red="#ed8796"
-      thm_green="#a6da95"
-      thm_yellow="#eed49f"
-      thm_blue="#8aadf4"
-      thm_orange="#f5a97f"
-      thm_black4="#494d64"
-
-      # Status bar
-      set -g status "on"
-      set -g status-bg "''${thm_bg}"
-      set -g status-justify "left"
-      set -g status-left-length "100"
-      set -g status-right-length "100"
-      set-option -g status-position top
-
-      # Messages
-      set -g message-style "fg=''${thm_cyan},bg=''${thm_gray},align=centre"
-      set -g message-command-style "fg=''${thm_cyan},bg=''${thm_gray},align=centre"
-
-      # Panes
-      set -g pane-border-style "fg=''${thm_gray}"
-      set -g pane-active-border-style "fg=''${thm_blue}"
-
-      # Windows
-      set -g window-status-activity-style "fg=''${thm_fg},bg=''${thm_bg},none"
-      set -g window-status-separator ""
-      set -g window-status-style "fg=''${thm_fg},bg=''${thm_bg},none"
-
-      # Statusline - current window
-      set -g window-status-current-format "#[fg=''${thm_blue},bg=''${thm_bg}] #I: #[fg=''${thm_magenta},bg=''${thm_bg}](✓) #[fg=''${thm_cyan},bg=''${thm_bg}]#(echo '#{pane_current_path}' | rev | cut -d'/' -f-2 | rev) #[fg=''${thm_magenta},bg=''${thm_bg}]"
-
-      # Statusline - other windows
-      set -g window-status-format "#[fg=''${thm_blue},bg=''${thm_bg}] #I: #[fg=''${thm_fg},bg=''${thm_bg}]#W"
-
-      # Statusline - right side
-      set -g status-right "#[fg=''${thm_blue},bg=''${thm_bg},nobold,nounderscore,noitalics]#[fg=''${thm_bg},bg=''${thm_blue},nobold,nounderscore,noitalics] #[fg=''${thm_fg},bg=''${thm_gray}] #W #{?client_prefix,#[fg=''${thm_magenta}],#[fg=''${thm_cyan}]}#[bg=''${thm_gray}]#{?client_prefix,#[bg=''${thm_magenta}],#[bg=''${thm_cyan}]}#[fg=''${thm_bg}] #[fg=''${thm_fg},bg=''${thm_gray}] #S "
-
-      # Statusline - left side (empty)
-      set -g status-left ""
-
-      # Modes
-      set -g clock-mode-colour "''${thm_blue}"
-      set -g mode-style "fg=''${thm_blue} bg=''${thm_black4} bold"
-
-      # Sessionizer
-      bind-key -r f run-shell "tmux neww ~/.local/scripts/tmux-sessionizer"
+      # Load keybinds, theme, and statusline from dotfiles
+      source-file ~/nixos-config/dotfiles/tmux/tmux.local.conf
     '';
 
     plugins = with pkgs.tmuxPlugins; [
@@ -376,41 +274,9 @@ in
     ];
   };
 
-  # Sessionizer script (matches original ~/.dotfiles/tmux/scripts/tmux-sessionizer)
-  home.file.".local/scripts/tmux-sessionizer" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-
-      if [[ $# -eq 1 ]]; then
-          selected=$1
-      else
-          selected=$(find ${lib.concatStringsSep " " userConfig.sessionizerPaths} -mindepth 1 -maxdepth 1 -type d 2>/dev/null | fzf)
-      fi
-
-      if [[ -z $selected ]]; then
-          exit 0
-      fi
-
-      selected_name=$(basename "$selected" | tr '. ' '_')
-      tmux_running=$(pgrep tmux)
-
-      if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-          tmux new-session -s "$selected_name" -c "$selected"
-          exit 0
-      fi
-
-      if ! tmux has-session -t="$selected_name" 2> /dev/null; then
-          tmux new-session -ds "$selected_name" -c "$selected"
-      fi
-
-      if [[ -z $TMUX ]]; then
-          tmux attach -t "$selected_name"
-      else
-          tmux switch-client -t "$selected_name"
-      fi
-    '';
-  };
+  # Sessionizer script symlink
+  home.file.".local/scripts/tmux-sessionizer".source = config.lib.file.mkOutOfStoreSymlink
+    "${config.home.homeDirectory}/nixos-config/dotfiles/tmux/scripts/tmux-sessionizer";
 
   # fzf
   programs.fzf = {
