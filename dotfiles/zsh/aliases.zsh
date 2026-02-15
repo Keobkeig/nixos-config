@@ -42,17 +42,19 @@ alias nfu='nix flake update'
 # Home Manager (macOS)
 alias hms='home-manager switch --flake ~/nixos-config#rxue@macbook'
 
-# CTF/Security tools (macOS paths)
-alias potfile='cat /opt/homebrew/Cellar/hashcat/6.2.6_1/share/hashcat/hashcat.potfile'
-alias stegsolve='cd ~/Documents/stegsolve-macos/ && java -jar stegsolve.jar'
-alias unshadow='/opt/homebrew/Cellar/john-jumbo/1.9.0_1/share/john/unshadow'
-alias zip2john='/opt/homebrew/Cellar/john-jumbo/1.9.0_1/share/john/zip2john'
-alias rar2john='/opt/homebrew/Cellar/john-jumbo/1.9.0_1/share/john/rar2john'
-alias ssh2john='/opt/homebrew/Cellar/john-jumbo/1.9.0_1/share/john/ssh2john.py'
+# CTF/Security tools
+# John utilities: use PATH version (Nix), fallback to Homebrew (version-independent)
+_john_brew="/opt/homebrew/opt/john-jumbo/share/john"
+if ! command -v unshadow &>/dev/null && [ -f "$_john_brew/unshadow" ]; then alias unshadow="$_john_brew/unshadow"; fi
+if ! command -v zip2john &>/dev/null && [ -f "$_john_brew/zip2john" ]; then alias zip2john="$_john_brew/zip2john"; fi
+if ! command -v rar2john &>/dev/null && [ -f "$_john_brew/rar2john" ]; then alias rar2john="$_john_brew/rar2john"; fi
+if ! command -v ssh2john &>/dev/null && [ -f "$_john_brew/ssh2john.py" ]; then alias ssh2john="$_john_brew/ssh2john.py"; fi
+unset _john_brew
+[ -d /opt/homebrew/opt/hashcat ] && alias potfile='cat /opt/homebrew/opt/hashcat/share/hashcat/hashcat.potfile'
+[ -d ~/Documents/stegsolve-macos ] && alias stegsolve='cd ~/Documents/stegsolve-macos/ && java -jar stegsolve.jar'
 
-# Project-specific
-alias auv='~/cuauv/workspaces/repo/docker/auv-docker.py'
-alias rv='docker run -i --init -e NETID=rx77 --rm -v "$PWD":/root ghcr.io/sampsyo/cs3410-infra'
+# Project-specific (only defined if paths exist)
+[ -f ~/cuauv/workspaces/repo/docker/auv-docker.py ] && alias auv='~/cuauv/workspaces/repo/docker/auv-docker.py'
 
 # Config shortcuts
-alias nvimconfig='code ~/.config/nvim/'
+alias nvimconfig='$EDITOR ~/.config/nvim/'

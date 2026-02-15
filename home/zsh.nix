@@ -47,6 +47,10 @@
       # Load aliases and init from dotfiles (editable without rebuild)
       source ~/nixos-config/dotfiles/zsh/aliases.zsh
       source ~/nixos-config/dotfiles/zsh/init.zsh
+
+      # Zoxide MUST be initialized last - other plugins (especially zsh-autocomplete)
+      # can clobber its shell functions if loaded after it
+      eval "$(${pkgs.zoxide}/bin/zoxide init zsh --cmd cd)"
     '';
   };
 }

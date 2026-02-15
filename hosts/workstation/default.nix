@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, userConfig, ... }:
 
 {
   imports = [
@@ -50,9 +50,9 @@
   };
 
   # User account
-  users.users.rxue = {
+  users.users.${userConfig.username} = {
     isNormalUser = true;
-    description = "rxue";
+    description = userConfig.username;
     extraGroups = [ "networkmanager" "wheel" "docker" "audio" "video" ];
     shell = pkgs.fish;
   };

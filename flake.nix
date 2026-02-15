@@ -31,12 +31,18 @@
 
   outputs = { self, nixpkgs, home-manager, nix-cachyos-kernel, dms, catppuccin, spicetify-nix, zen-browser, ... }@inputs:
   let
+    # Change this to set up for a different user
+    username = "rxue";
+
     # User-specific configuration (shared across platforms)
     userConfig = {
+      inherit username;
       # Directories for tmux-sessionizer to search
+      # Missing paths are silently ignored (find ... 2>/dev/null)
       sessionizerPaths = [
-        "/Users/Programming"
+        "~/Documents/Programming"
         "~/Documents/Textbooks"
+        "/Users/Programming"
       ];
     };
 
@@ -62,7 +68,7 @@
     # NixOS (integrated Home Manager)
     nixosConfigurations.workstation = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit inputs; pkgs = linuxPkgs; };
+      specialArgs = { inherit inputs userConfig; pkgs = linuxPkgs; };
       modules = [
         ./hosts/workstation
 
@@ -71,13 +77,13 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = { inherit inputs userConfig; isNixOS = true; };
-          home-manager.users.rxue = import ./home;
+          home-manager.users.${username} = import ./home;
         }
       ];
     };
 
     # macOS (standalone Home Manager)
-    homeConfigurations."rxue@macbook" = home-manager.lib.homeManagerConfiguration {
+    homeConfigurations."${username}@macbook" = home-manager.lib.homeManagerConfiguration {
       pkgs = darwinPkgs;
       extraSpecialArgs = { inherit inputs userConfig; isNixOS = false; };
       modules = [ ./home ];

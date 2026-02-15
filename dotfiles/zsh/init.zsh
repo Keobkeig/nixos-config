@@ -24,17 +24,17 @@ if [ -d "$HOME/Library/pnpm" ]; then
   export PATH="$PNPM_HOME:$PATH"
 fi
 
-# Homebrew paths (macOS)
+# Homebrew paths (macOS, version-independent via /opt/homebrew/opt/)
 if [ -d "/opt/homebrew" ]; then
-  export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-  export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
-  export PATH="/opt/homebrew/Cellar/openvpn/2.6.10/sbin:$PATH"
-  export OPENSSL_ROOT_DIR="/opt/homebrew/opt/openssl@3"
+  [ -d /opt/homebrew/opt/openjdk/bin ] && export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+  [ -d /opt/homebrew/opt/postgresql@17/bin ] && export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+  [ -d /opt/homebrew/opt/openvpn/sbin ] && export PATH="/opt/homebrew/opt/openvpn/sbin:$PATH"
+  [ -d /opt/homebrew/opt/openssl@3 ] && export OPENSSL_ROOT_DIR="/opt/homebrew/opt/openssl@3"
 
   # Terraform completion
   if command -v terraform &> /dev/null; then
     autoload -U +X bashcompinit && bashcompinit
-    complete -o nospace -C /opt/homebrew/bin/terraform terraform
+    complete -o nospace -C "$(command -v terraform)" terraform
   fi
 fi
 
@@ -44,9 +44,11 @@ fi
 # opencode
 [ -d "$HOME/.opencode/bin" ] && export PATH="$HOME/.opencode/bin:$PATH"
 
-# Google Cloud SDK
-[ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ] && source "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"
-[ -f "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc"
+# Google Cloud SDK (installed via Nix in home.packages; manual fallback below)
+if ! command -v gcloud &>/dev/null; then
+  [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ] && source "$HOME/google-cloud-sdk/path.zsh.inc"
+  [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
+fi
 
 # Additional PATH entries
 export PATH="$HOME/.local/scripts:$PATH"

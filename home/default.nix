@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, isNixOS, ... }:
+{ config, pkgs, lib, inputs, isNixOS, userConfig, ... }:
 
 let
   isLinux = pkgs.stdenv.isLinux;
@@ -22,8 +22,8 @@ in
     ./gaming.nix
   ];
 
-  home.username = "rxue";
-  home.homeDirectory = if isDarwin then "/Users/rxue" else "/home/rxue";
+  home.username = userConfig.username;
+  home.homeDirectory = if isDarwin then "/Users/${userConfig.username}" else "/home/${userConfig.username}";
   home.stateVersion = "24.11";
 
   # Common CLI packages (installed system-wide on NixOS, via HM on macOS)
@@ -62,6 +62,7 @@ in
 
     # Cloud
     awscli2
+    google-cloud-sdk
 
     # Misc
     file
@@ -104,6 +105,13 @@ in
 
   # Let Home Manager manage itself
   programs.home-manager.enable = true;
+
+  # Nix garbage collection (macOS only — NixOS handles it system-wide)
+  nix.gc = lib.mkIf isDarwin {
+    automatic = true;
+    frequency = "weekly";
+    options = "--delete-older-than 14d";
+  };
 
   # Catppuccin theme (Macchiato flavor)
   catppuccin = {
@@ -274,9 +282,41 @@ in
     ];
   };
 
-  # Sessionizer script symlink
-  home.file.".local/scripts/tmux-sessionizer".source = config.lib.file.mkOutOfStoreSymlink
-    "${config.home.homeDirectory}/nixos-config/dotfiles/tmux/scripts/tmux-sessionizer";
+  # Sessionizer script (generated from userConfig.sessionizerPaths)
+  home.file.".local/scripts/tmux-sessionizer" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+
+      if [[ $# -eq 1 ]]; then
+          selected=$1
+      else
+          selected=$(find ${lib.concatStringsSep " " userConfig.sessionizerPaths} -mindepth 1 -maxdepth 1 -type d 2>/dev/null | fzf)
+      fi
+
+      if [[ -z $selected ]]; then
+          exit 0
+      fi
+
+      selected_name=$(basename "$selected" | tr '. ' '_')
+      tmux_running=$(pgrep tmux)
+
+      if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+          tmux new-session -s "$selected_name" -c "$selected"
+          exit 0
+      fi
+
+      if ! tmux has-session -t="$selected_name" 2> /dev/null; then
+          tmux new-session -ds "$selected_name" -c "$selected"
+      fi
+
+      if [[ -z $TMUX ]]; then
+          tmux attach -t "$selected_name"
+      else
+          tmux switch-client -t "$selected_name"
+      fi
+    '';
+  };
 
   # fzf
   programs.fzf = {
@@ -306,7 +346,7 @@ in
   programs.zoxide = {
     enable = true;
     enableFishIntegration = false;
-    enableZshIntegration = true;
+    enableZshIntegration = false;  # Manually initialized at end of zsh.nix initContent
     options = [ "--cmd" "cd" ];  # Replace cd with zoxide
   };
 
