@@ -10,35 +10,6 @@ alias la='eza -la --icons'
 alias lt='eza --tree --icons'
 alias l='eza -l --icons'
 
-# Git
-alias g='git'
-alias gs='git status'
-alias ga='git add'
-alias gc='git commit'
-alias gp='git push'
-alias gl='git pull'
-alias gd='git diff'
-alias gco='git checkout'
-alias gb='git branch'
-alias glog='git log --oneline --graph'
-
-# Docker
-alias d='docker'
-alias dc='docker compose'
-alias dps='docker ps'
-
-# Misc
-alias cat='bat'
-alias vim='nvim'
-alias vi='nvim'
-alias c='clear'
-alias tree='eza --tree --icons'
-
-# NixOS
-alias nrs='sudo nixos-rebuild switch --flake ~/nixos-config#workstation'
-alias nrt='sudo nixos-rebuild test --flake ~/nixos-config#workstation'
-alias nfu='nix flake update'
-
 # Home Manager (macOS)
 alias hms='home-manager switch --flake ~/nixos-config#rxue@macbook'
 
@@ -53,8 +24,5 @@ unset _john_brew
 [ -d /opt/homebrew/opt/hashcat ] && alias potfile='cat /opt/homebrew/opt/hashcat/share/hashcat/hashcat.potfile'
 [ -d ~/Documents/stegsolve-macos ] && alias stegsolve='cd ~/Documents/stegsolve-macos/ && java -jar stegsolve.jar'
 
-# Project-specific (only defined if paths exist)
-[ -f ~/cuauv/workspaces/repo/docker/auv-docker.py ] && alias auv='~/cuauv/workspaces/repo/docker/auv-docker.py'
-
-# Config shortcuts
-alias nvimconfig='$EDITOR ~/.config/nvim/'
+# CS 3410 RISC-V Docker
+alias rv='docker run -i --init -e NETID=rx77 --rm -v "$PWD":/root ghcr.io/sampsyo/cs3410-infra'

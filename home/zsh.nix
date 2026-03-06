@@ -43,14 +43,17 @@
       path = "${config.xdg.dataHome}/zsh/history";
     };
 
-    initContent = ''
-      # Load aliases and init from dotfiles (editable without rebuild)
-      source ~/nixos-config/dotfiles/zsh/aliases.zsh
-      source ~/nixos-config/dotfiles/zsh/init.zsh
-
-      # Zoxide MUST be initialized last - other plugins (especially zsh-autocomplete)
-      # can clobber its shell functions if loaded after it
-      eval "$(${pkgs.zoxide}/bin/zoxide init zsh --cmd cd)"
-    '';
+    initContent = lib.mkMerge [
+      (lib.mkOrder 1000 ''
+        # Load aliases and init from dotfiles (editable without rebuild)
+        source ~/nixos-config/dotfiles/zsh/aliases.zsh
+        source ~/nixos-config/dotfiles/zsh/init.zsh
+      '')
+      (lib.mkOrder 99999 ''
+        # Zoxide MUST be initialized last - other plugins (direnv, syntax-highlighting)
+        # can clobber its shell functions if loaded after it
+        eval "$(${pkgs.zoxide}/bin/zoxide init zsh --cmd cd)"
+      '')
+    ];
   };
 }

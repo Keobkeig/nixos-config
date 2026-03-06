@@ -109,7 +109,7 @@ in
   # Nix garbage collection (macOS only — NixOS handles it system-wide)
   nix.gc = lib.mkIf isDarwin {
     automatic = true;
-    frequency = "weekly";
+    dates = "weekly";
     options = "--delete-older-than 14d";
   };
 
