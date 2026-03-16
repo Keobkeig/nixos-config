@@ -301,6 +301,9 @@ in
       selected_name=$(basename "$selected" | tr '. ' '_')
       tmux_running=$(pgrep tmux)
 
+      # Set Ghostty tab title to the tmux session name
+      printf '\e]1;%s\a' "$selected_name"
+
       if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
           tmux new-session -s "$selected_name" -c "$selected"
           exit 0
