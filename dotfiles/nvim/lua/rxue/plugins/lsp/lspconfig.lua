@@ -11,6 +11,7 @@ return {
     local keymap = vim.keymap
 
     local capabilities = cmp_nvim_lsp.default_capabilities()
+    capabilities.general = { positionEncodings = { "utf-16" } }
 
     local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
     for type, icon in pairs(signs) do
