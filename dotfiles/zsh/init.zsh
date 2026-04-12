@@ -50,6 +50,9 @@ if ! command -v gcloud &>/dev/null; then
   [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
 fi
 
+# Secret env vars (not tracked in git)
+[[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
+
 # Additional PATH entries
 export PATH="$HOME/.local/scripts:$PATH"
 export PATH="$HOME/.local/bin:$PATH"

@@ -38,6 +38,8 @@ return {
         "emmet_ls",
         "prismals",
         "jdtls",
+        "clangd",
+        "rust_analyzer",
       },
     })
 

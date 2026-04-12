@@ -206,6 +206,22 @@ return {
       capabilities = capabilities,
     }
 
+    -- C/C++
+    vim.lsp.config.clangd = {
+      cmd = { "clangd" },
+      filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+      root_markers = { "compile_commands.json", "compile_flags.txt", ".clangd", ".git" },
+      capabilities = capabilities,
+    }
+
+    -- Rust
+    vim.lsp.config.rust_analyzer = {
+      cmd = { "rust-analyzer" },
+      filetypes = { "rust" },
+      root_markers = { "Cargo.toml", "rust-project.json", ".git" },
+      capabilities = capabilities,
+    }
+
     -- Enable all configured servers
     vim.lsp.enable({
       "pyrefly",
@@ -220,6 +236,8 @@ return {
       "emmet_ls",
       "prismals",
       "jdtls",
+      "clangd",
+      "rust_analyzer",
     })
   end,
 }
