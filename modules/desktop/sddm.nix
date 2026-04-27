@@ -5,14 +5,14 @@
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
-    theme = "catppuccin-mocha";
+    theme = "catppuccin-macchiato";
     package = pkgs.kdePackages.sddm;
   };
 
   # SDDM theme packages
   environment.systemPackages = with pkgs; [
     (catppuccin-sddm.override {
-      flavor = "mocha";
+      flavor = "macchiato";
       font = "Noto Sans";
       fontSize = "12";
       loginBackground = true;

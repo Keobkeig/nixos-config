@@ -43,10 +43,4 @@
     rust-analyzer
   ];
 
-  # Environment variables for language tooling
-  environment.sessionVariables = {
-    GOPATH = "$HOME/go";
-    CARGO_HOME = "$HOME/.cargo";
-    RUSTUP_HOME = "$HOME/.rustup";
-  };
 }

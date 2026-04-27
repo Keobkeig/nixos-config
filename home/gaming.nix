@@ -66,7 +66,7 @@
   '';
 
   # Gamemode configuration
-  xdg.configFile."gamemode.ini".text = ''
+  xdg.configFile."gamemode/gamemode.ini".text = ''
     [general]
     renice = 10
     ioprio = 0
