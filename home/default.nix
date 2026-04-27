@@ -7,6 +7,7 @@ in
 {
   imports = [
     inputs.catppuccin.homeModules.catppuccin
+    inputs.nix-index-database.homeModules.nix-index
 
     ./kitty.nix
     ./neovim.nix
@@ -26,11 +27,19 @@ in
   home.homeDirectory = if isDarwin then "/Users/${userConfig.username}" else "/home/${userConfig.username}";
   home.stateVersion = "24.11";
 
+  # bat (configured via programs.bat so catppuccin can write theme files to
+  # ~/.config/bat/themes/, which delta needs for its syntax-theme setting)
+  programs.bat.enable = true;
+  catppuccin.bat.enable = true;
+
+  # comma: run any nix package ephemerally with `, <command>`
+  # uses nix-index-database (pre-built index, no manual nix-index runs needed)
+  programs.nix-index-database.comma.enable = true;
+
   # Common CLI packages (installed system-wide on NixOS, via HM on macOS)
   home.packages = with pkgs; [
     # Shell utilities
     eza
-    bat
     ripgrep
     fd
     jq
@@ -101,6 +110,9 @@ in
     CARGO_HOME = "$HOME/.cargo";
     RUSTUP_HOME = "$HOME/.rustup";
     EDITOR = "nvim";
+    # Suppress false-positive warning: zoxide IS initialized last in .zshrc,
+    # but p10k instant prompt makes it think otherwise
+    _ZO_DOCTOR = "0";
   };
 
   # Let Home Manager manage itself

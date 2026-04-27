@@ -27,9 +27,14 @@
     };
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-cachyos-kernel, dms, catppuccin, spicetify-nix, zen-browser, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nix-cachyos-kernel, dms, catppuccin, spicetify-nix, zen-browser, nix-index-database, ... }@inputs:
   let
     # Change this to set up for a different user
     username = "rxue";
