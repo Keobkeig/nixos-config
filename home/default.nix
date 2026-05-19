@@ -94,8 +94,8 @@ in
     zig
 
     # LSPs and formatters for neovim
-    nodePackages.typescript-language-server
-    nodePackages.vscode-langservers-extracted
+    typescript-language-server
+    vscode-langservers-extracted
     lua-language-server
     nil  # Nix LSP
     nixpkgs-fmt

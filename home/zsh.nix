@@ -52,6 +52,8 @@
       (lib.mkOrder 99999 ''
         # Zoxide MUST be initialized last - other plugins (direnv, syntax-highlighting)
         # can clobber its shell functions if loaded after it
+        # Also ensure the binary is in PATH so the generated `cd` function can find it
+        export PATH="${pkgs.zoxide}/bin:$PATH"
         eval "$(${pkgs.zoxide}/bin/zoxide init zsh --cmd cd)"
       '')
     ];
