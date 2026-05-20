@@ -56,6 +56,10 @@ in
         amend = "commit --amend --no-edit";
         pushf = "push --force-with-lease";
       };
+
+      # Machine-local overrides (work email, signing key, etc.) — not managed by Nix.
+      # Keys in ~/.gitconfig.local win any conflict with settings above.
+      include.path = "~/.gitconfig.local";
     } // lib.optionalAttrs isDarwin {
       "credential \"https://dev.azure.com\"".useHttpPath = true;
     };

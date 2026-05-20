@@ -56,6 +56,11 @@
         export PATH="${pkgs.zoxide}/bin:$PATH"
         eval "$(${pkgs.zoxide}/bin/zoxide init zsh --cmd cd)"
       '')
+      (lib.mkOrder 100000 ''
+        # Machine-local overrides — not managed by Nix, freely writable.
+        # Programs/setup scripts that need to append to a shell config should target ~/.zshrc.local.
+        [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+      '')
     ];
   };
 }
