@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, userConfig, ... }:
 
 let
   isLinux = pkgs.stdenv.isLinux;
@@ -27,7 +27,7 @@ in
     ];
 
     settings = {
-      user = {
+      user = lib.mkIf (!userConfig.isWork) {
         name = "Richie Xue";
         email = "angela.xue3@gmail.com";
       };

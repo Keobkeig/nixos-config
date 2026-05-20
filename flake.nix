@@ -42,12 +42,13 @@
     # User-specific configuration (shared across platforms)
     userConfig = {
       inherit username;
+      # Whether this is a work machine (disables personal git credentials, etc.)
+      isWork = true;
       # Directories for tmux-sessionizer to search
       # Missing paths are silently ignored (find ... 2>/dev/null)
       sessionizerPaths = [
+        "~/Documents/Work"
         "~/Documents/Programming"
-        "~/Documents/Textbooks"
-        "/Users/Programming"
       ];
     };
 

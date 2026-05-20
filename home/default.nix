@@ -10,6 +10,7 @@ in
     inputs.nix-index-database.homeModules.nix-index
 
     ./kitty.nix
+    ./ghostty.nix
     ./neovim.nix
     ./git.nix
     ./zsh.nix

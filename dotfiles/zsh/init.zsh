@@ -71,3 +71,6 @@ fi
 
 # Sessionizer keybind (Ctrl+F) - after p10k loads
 bindkey -s '^f' 'tmux-sessionizer\n'
+
+# Local shell overrides (not tracked in git - for work-only env vars like GHE_API_TOKEN)
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
