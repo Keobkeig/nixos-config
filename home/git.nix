@@ -27,9 +27,12 @@ in
     ];
 
     settings = {
-      user = lib.mkIf (!userConfig.isWork) {
+      user = {
         name = "Richie Xue";
-        email = "angela.xue3@gmail.com";
+        email = if userConfig.isWork then "rxue@anduril.com" else "angela.xue3@gmail.com";
+      } // lib.optionalAttrs userConfig.isWork {
+        # SSH commit signing (GitHub Signing Key on GHE).
+        signingkey = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
       };
 
       init.defaultBranch = "main";
@@ -62,6 +65,12 @@ in
       include.path = "~/.gitconfig.local";
     } // lib.optionalAttrs isDarwin {
       "credential \"https://dev.azure.com\"".useHttpPath = true;
+    } // lib.optionalAttrs userConfig.isWork {
+      # Anduril: rewrite https GHE URLs to ssh so go-mod / cargo / etc. work.
+      "url \"git@ghe.anduril.dev:\"".insteadOf = "https://ghe.anduril.dev";
+      gpg.format = "ssh";
+      commit.gpgsign = true;
+      tag.gpgsign = true;
     };
   };
 
