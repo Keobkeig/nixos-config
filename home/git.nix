@@ -33,7 +33,7 @@ in
       };
 
       init.defaultBranch = "main";
-      pull.rebase = false;
+      pull.rebase = true;
       push.autoSetupRemote = true;
       merge.conflictstyle = "diff3";
       diff.colorMoved = "default";
