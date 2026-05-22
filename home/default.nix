@@ -103,6 +103,9 @@ in
     pyright
     ruff
     gopls
+  ] ++ lib.optionals userConfig.isWork [
+    # Anduril-specific tooling
+    amazon-ecr-credential-helper
   ];
 
   # Environment variables
