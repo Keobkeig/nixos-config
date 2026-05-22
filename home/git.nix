@@ -87,13 +87,12 @@ in
     };
   };
 
-  programs.gh = {
-    enable = true;
-    settings = {
-      git_protocol = "ssh";
-      prompt = "enabled";
-    };
-  };
+  # gh CLI is installed via modules/packages/cli.nix.
+  # Config is managed as a writable out-of-store symlink so `gh config set`,
+  # `gh alias set`, etc. work at runtime. (programs.gh would write a read-only
+  # store path, breaking those commands.)
+  home.file.".config/gh/config.yml".source =
+    config.lib.file.mkOutOfStoreSymlink "${repoPath}/dotfiles/gh/config.yml";
 
   programs.lazygit = {
     enable = true;
