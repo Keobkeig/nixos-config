@@ -52,6 +52,7 @@
 
     # Cloud
     awscli2
+    google-cloud-sdk
 
     # Misc
     file
@@ -59,5 +60,6 @@
     pciutils
     usbutils
     lsof
+    watch
   ];
 }

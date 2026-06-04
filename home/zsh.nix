@@ -46,8 +46,8 @@
     initContent = lib.mkMerge [
       (lib.mkOrder 1000 ''
         # Load aliases and init from dotfiles (editable without rebuild)
-        source ~/nixos-config/dotfiles/zsh/aliases.zsh
-        source ~/nixos-config/dotfiles/zsh/init.zsh
+        source ${config.home.homeDirectory}/nixos-config/dotfiles/zsh/aliases.zsh
+        source ${config.home.homeDirectory}/nixos-config/dotfiles/zsh/init.zsh
       '')
       (lib.mkOrder 99999 ''
         # Zoxide MUST be initialized last - other plugins (direnv, syntax-highlighting)

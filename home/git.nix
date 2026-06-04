@@ -46,7 +46,7 @@ in
 
       credential.helper =
         if isDarwin then "osxkeychain"
-        else "${pkgs.gitFull}/bin/git-credential-libsecret";
+        else "${pkgs.git-credential-libsecret}/bin/git-credential-libsecret";
 
       alias = {
         co = "checkout";

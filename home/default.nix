@@ -37,8 +37,8 @@ in
   # uses nix-index-database (pre-built index, no manual nix-index runs needed)
   programs.nix-index-database.comma.enable = true;
 
-  # Common CLI packages (installed system-wide on NixOS, via HM on macOS)
-  home.packages = with pkgs; [
+  # CLI packages — installed system-wide on NixOS (modules/packages/cli.nix), so HM only ships them on macOS
+  home.packages = with pkgs; lib.optionals isDarwin [
     # Shell utilities
     eza
     ripgrep
@@ -77,7 +77,7 @@ in
     # Misc
     file
     watch
-  ] ++ lib.optionals isDarwin [
+
     # macOS-specific (Linux has these system-wide)
     coreutils
     findutils
@@ -178,7 +178,7 @@ in
       set -g default-command "${pkgs.zsh}/bin/zsh"
 
       # Load keybinds, theme, and statusline from dotfiles
-      source-file ~/nixos-config/dotfiles/tmux/tmux.local.conf
+      source-file ${config.home.homeDirectory}/nixos-config/dotfiles/tmux/tmux.local.conf
     '';
 
     plugins = with pkgs.tmuxPlugins; [

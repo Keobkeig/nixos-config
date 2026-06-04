@@ -7,7 +7,7 @@
   # GTK theme for system apps
   environment.systemPackages = with pkgs; [
     catppuccin-gtk
-    catppuccin-cursors.mochaDark
+    catppuccin-cursors.macchiatoDark
     papirus-icon-theme
   ];
 

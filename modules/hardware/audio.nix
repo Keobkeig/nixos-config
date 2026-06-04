@@ -2,7 +2,7 @@
 
 {
   # Disable PulseAudio (using PipeWire instead)
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
 
   # Enable rtkit for real-time scheduling
   security.rtkit.enable = true;
@@ -13,7 +13,6 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    jack.enable = true;
 
     # Low-latency configuration
     extraConfig.pipewire."92-low-latency" = {

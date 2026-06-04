@@ -2,6 +2,8 @@
 
 {
   imports = [
+    # Generated per-machine on first install; gitignored.
+    # Run `nixos-generate-config --root /mnt` and copy here on a fresh box.
     ./hardware-configuration.nix
 
     # Hardware
@@ -54,11 +56,17 @@
     isNormalUser = true;
     description = userConfig.username;
     extraGroups = [ "networkmanager" "wheel" "docker" "audio" "video" ];
-    shell = pkgs.fish;
+    shell = pkgs.zsh;
   };
 
-  # Enable fish shell system-wide
-  programs.fish.enable = true;
+  # Enable zsh system-wide (matches users.users.<user>.shell; HM owns the config)
+  programs.zsh.enable = true;
+
+  # SSD trim, swap-in-RAM, /tmp cleanup, firmware updates
+  services.fstrim.enable = true;
+  zramSwap.enable = true;
+  boot.tmp.cleanOnBoot = true;
+  services.fwupd.enable = true;
 
   # Nix settings
   nix = {

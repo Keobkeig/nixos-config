@@ -18,11 +18,6 @@
     # PDF viewer
     zathura
 
-    # File manager
-    thunar
-    xfce.thunar-volman
-    xfce.thunar-archive-plugin
-
     # Screenshots
     grim
     slurp
@@ -40,7 +35,6 @@
 
     # Gaming
     lutris
-    protonup-qt
 
     # Zen Browser
     inputs.zen-browser.packages.${pkgs.system}.default

@@ -8,7 +8,7 @@ A reproducible NixOS configuration using Flakes + Home Manager with niri window 
 - **Desktop Shell**: DankMaterialShell (replaces waybar, mako, fuzzel, swaylock, swayidle)
 - **Kernel**: CachyOS patches for performance
 - **Theme**: Catppuccin Mocha throughout
-- **Shell**: Fish + Starship + Tmux
+- **Shell**: Zsh + Powerlevel10k + Tmux
 - **Editor**: Neovim (symlinked config for mutability)
 
 ## Fresh Install
@@ -21,7 +21,7 @@ Boot NixOS minimal ISO and partition:
 # Create partitions
 gdisk /dev/nvme0n1
 # p1: 512MB EFI (type EF00)
-# p2: rest for LUKS (type 8300)
+# p2: rest for LUKS (type 8309)
 
 # Format EFI
 mkfs.fat -F 32 /dev/nvme0n1p1
