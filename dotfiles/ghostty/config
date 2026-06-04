@@ -3,7 +3,7 @@ font-family = JetBrainsMono Nerd Font
 font-size = 13
 
 # Catppuccin Macchiato theme
-theme = catppuccin-macchiato
+theme = Catppuccin Macchiato
 
 # Window
 background-opacity = 0.95
@@ -22,6 +22,6 @@ macos-titlebar-style = tabs
 macos-option-as-alt = true
 
 # Keybindings
-keybind = super+d:new_split:right
-keybind = super+shift+d:new_split:down
-keybind = super+w:close_surface
+keybind = super+d=new_split:right
+keybind = super+shift+d=new_split:down
+keybind = super+w=close_surface
