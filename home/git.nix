@@ -38,6 +38,7 @@ in
       init.defaultBranch = "main";
       pull.rebase = true;
       push.autoSetupRemote = true;
+      rebase.updateRefs = true;
       merge.conflictstyle = "diff3";
       diff.colorMoved = "default";
       core.editor = "nvim";
@@ -98,7 +99,13 @@ in
     enable = true;
   };
 
-  # Lazygit config symlink (macOS uses ~/Library/Application Support/lazygit/)
-  home.file."${if isDarwin then "Library/Application Support/lazygit/config.yml" else ".config/lazygit/config.yml"}".source =
-    config.lib.file.mkOutOfStoreSymlink "${repoPath}/dotfiles/lazygit/config.yml";
+  # Lazygit config symlink (macOS uses ~/Library/Application Support/lazygit/).
+  # The programs.lazygit module also manages this same file, but disables it
+  # (enable = settings != {}) since we set no `settings`, and would write a
+  # read-only store path. mkForce on both source and enable makes our writable
+  # out-of-store symlink win (runtime `o` edits work). Same rationale as gh above.
+  home.file."${if isDarwin then "Library/Application Support/lazygit/config.yml" else ".config/lazygit/config.yml"}" = {
+    enable = lib.mkForce true;
+    source = lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoPath}/dotfiles/lazygit/config.yml");
+  };
 }
