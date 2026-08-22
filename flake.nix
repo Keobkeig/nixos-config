@@ -47,11 +47,9 @@
     # Change this to set up for a different user
     username = "rxue";
 
-    # User-specific configuration (shared across platforms)
-    userConfig = {
+    # Facts shared by every machine.
+    baseUserConfig = {
       inherit username;
-      # Whether this is a work machine (disables personal git credentials, etc.)
-      isWork = false;
       # Directories for the tmux/herdr sessionizers to search
       # Missing paths are silently ignored (find ... 2>/dev/null)
       sessionizerPaths = [
@@ -61,6 +59,17 @@
         "~/Documents/Textbooks"
       ];
     };
+
+    # Per-machine facts. These live here rather than in one shared attrset so that
+    # no machine ever has to edit a committed line to describe itself: to bring
+    # back work mode, add a host with isWork = true instead of flipping a flag.
+    # (isWork gates the Anduril git identity and tooling — see home/git.nix.)
+    hostConfigs = {
+      workstation = { isWork = false; };
+      macbook = { isWork = false; };
+    };
+
+    userConfigFor = host: baseUserConfig // hostConfigs.${host};
 
     # NixOS-specific pkgs
     linuxPkgs = import nixpkgs {
@@ -84,7 +93,7 @@
     # NixOS (integrated Home Manager)
     nixosConfigurations.workstation = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit inputs userConfig; pkgs = linuxPkgs; };
+      specialArgs = { inherit inputs; userConfig = userConfigFor "workstation"; pkgs = linuxPkgs; };
       modules = [
         ./hosts/workstation
 
@@ -92,7 +101,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit inputs userConfig; isNixOS = true; };
+          home-manager.extraSpecialArgs = { inherit inputs; userConfig = userConfigFor "workstation"; isNixOS = true; };
           home-manager.users.${username} = import ./home;
         }
       ];
@@ -101,7 +110,7 @@
     # macOS (standalone Home Manager)
     homeConfigurations."${username}@macbook" = home-manager.lib.homeManagerConfiguration {
       pkgs = darwinPkgs;
-      extraSpecialArgs = { inherit inputs userConfig; isNixOS = false; };
+      extraSpecialArgs = { inherit inputs; userConfig = userConfigFor "macbook"; isNixOS = false; };
       modules = [ ./home ];
     };
   };
