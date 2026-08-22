@@ -1,4 +1,12 @@
-{ config, pkgs, lib, inputs, isNixOS, userConfig, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  isNixOS,
+  userConfig,
+  ...
+}:
 
 let
   isLinux = pkgs.stdenv.isLinux;
@@ -16,10 +24,11 @@ in
     ./git.nix
     ./zsh.nix
     ./herdr.nix
-  ] ++ lib.optionals isNixOS [
+  ]
+  ++ lib.optionals isNixOS [
     # NixOS-only modules (these inputs aren't available on macOS)
     inputs.spicetify-nix.homeManagerModules.default
-    inputs.dms.homeManagerModules.default
+    inputs.dms.homeModules.default
     ./dms.nix
     ./spicetify.nix
     ./zathura.nix
@@ -27,7 +36,8 @@ in
   ];
 
   home.username = userConfig.username;
-  home.homeDirectory = if isDarwin then "/Users/${userConfig.username}" else "/home/${userConfig.username}";
+  home.homeDirectory =
+    if isDarwin then "/Users/${userConfig.username}" else "/home/${userConfig.username}";
   home.stateVersion = "24.11";
 
   # bat (configured via programs.bat so catppuccin can write theme files to
@@ -40,78 +50,81 @@ in
   programs.nix-index-database.comma.enable = true;
 
   # CLI packages — installed system-wide on NixOS (modules/packages/cli.nix), so HM only ships them on macOS
-  home.packages = with pkgs; lib.optionals isDarwin [
-    # Shell utilities
-    eza
-    ripgrep
-    fd
-    jq
-    yq
-    tree
+  home.packages =
+    with pkgs;
+    lib.optionals isDarwin [
+      # Shell utilities
+      eza
+      ripgrep
+      fd
+      jq
+      yq
+      tree
 
-    # System monitoring
-    htop
+      # System monitoring
+      htop
 
-    # Network utilities
-    wget
-    curl
-    httpie
+      # Network utilities
+      wget
+      curl
+      httpie
 
-    # Build tools
-    cmake
-    gnumake
-    pkg-config
+      # Build tools
+      cmake
+      gnumake
+      pkg-config
 
-    # Archive tools
-    unzip
-    zip
-    p7zip
+      # Archive tools
+      unzip
+      zip
+      p7zip
 
-    # Container tools
-    docker-compose
-    lazydocker
-    lazygit
+      # Container tools
+      docker-compose
+      lazydocker
+      lazygit
 
-    # Cloud
-    awscli2
-    google-cloud-sdk
+      # Cloud
+      awscli2
+      google-cloud-sdk
 
-    # Misc
-    file
-    watch
+      # Misc
+      file
+      watch
 
-    # Nix tooling
-    nh  # nicer switch/diff/clean wrapper; reads NH_FLAKE below
+      # Nix tooling
+      nh # nicer switch/diff/clean wrapper; reads NH_FLAKE below
 
-    # macOS-specific (Linux has these system-wide)
-    coreutils
-    findutils
-    gnugrep
-    gnused
+      # macOS-specific (Linux has these system-wide)
+      coreutils
+      findutils
+      gnugrep
+      gnused
 
-    # Languages (on NixOS these are system-wide)
-    python3
-    uv
-    nodejs
-    bun
-    go
-    lua
-    luarocks
-    zig
+      # Languages (on NixOS these are system-wide)
+      python3
+      uv
+      nodejs
+      bun
+      go
+      lua
+      luarocks
+      zig
 
-    # LSPs and formatters for neovim
-    typescript-language-server
-    vscode-langservers-extracted
-    lua-language-server
-    nil  # Nix LSP
-    nixpkgs-fmt
-    pyright
-    ruff
-    gopls
-  ] ++ lib.optionals userConfig.isWork [
-    # Anduril-specific tooling
-    amazon-ecr-credential-helper
-  ];
+      # LSPs and formatters for neovim
+      typescript-language-server
+      vscode-langservers-extracted
+      lua-language-server
+      nil # Nix LSP
+      nixpkgs-fmt
+      pyright
+      ruff
+      gopls
+    ]
+    ++ lib.optionals userConfig.isWork [
+      # Anduril-specific tooling
+      amazon-ecr-credential-helper
+    ];
 
   # Environment variables
   home.sessionVariables = {
@@ -141,6 +154,11 @@ in
     enable = true;
     flavor = "macchiato";
     accent = "mauve";
+    # catppuccin.enable turns on every sub-module, including kvantum, which
+    # asserts qt.style.name == "kvantum". Kvantum is not installed anywhere here
+    # (Qt is themed system-wide as gtk2 in modules/theme/catppuccin.nix), so it
+    # was writing theme files for an engine we do not have. Opt out.
+    kvantum.enable = false;
   };
 
   # Readline (arrow key history search)
@@ -272,8 +290,11 @@ in
   programs.zoxide = {
     enable = true;
     enableFishIntegration = false;
-    enableZshIntegration = false;  # Manually initialized at end of zsh.nix initContent
-    options = [ "--cmd" "cd" ];  # Replace cd with zoxide
+    enableZshIntegration = false; # Manually initialized at end of zsh.nix initContent
+    options = [
+      "--cmd"
+      "cd"
+    ]; # Replace cd with zoxide
   };
 
   # GTK theme (Linux only)
@@ -286,10 +307,11 @@ in
         variant = "macchiato";
       };
     };
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-    };
+    # Icon package is left to catppuccin's gtk module, which sets
+    # catppuccin-papirus-folders (Papirus with Catppuccin folder colors).
+    # Defining it here too made gtk.iconTheme.package a conflicting definition
+    # and broke evaluation on Linux.
+    iconTheme.name = "Papirus-Dark";
     cursorTheme = {
       name = "catppuccin-macchiato-dark-cursors";
       package = pkgs.catppuccin-cursors.macchiatoDark;
@@ -310,17 +332,15 @@ in
 
   # Niri config symlink (Linux only)
   xdg.configFile."niri/config.kdl" = lib.mkIf isLinux {
-    source = config.lib.file.mkOutOfStoreSymlink
-      "${config.home.homeDirectory}/nixos-config/dotfiles/niri/config.kdl";
+    source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-config/dotfiles/niri/config.kdl";
   };
 
   # Zed config symlink
-  xdg.configFile."zed/settings.json".source = config.lib.file.mkOutOfStoreSymlink
-    "${config.home.homeDirectory}/nixos-config/dotfiles/zed/settings.json";
+  xdg.configFile."zed/settings.json".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-config/dotfiles/zed/settings.json";
 
   # Aerospace config symlink (macOS only)
   xdg.configFile."aerospace/aerospace.toml" = lib.mkIf isDarwin {
-    source = config.lib.file.mkOutOfStoreSymlink
-      "${config.home.homeDirectory}/nixos-config/dotfiles/aerospace/aerospace.toml";
+    source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-config/dotfiles/aerospace/aerospace.toml";
   };
 }

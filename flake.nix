@@ -33,6 +33,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-darwin = {
       # nix-darwin enforces that its release matches nixpkgs'. Our nixpkgs pin is
       # currently 26.05, so this tracks the matching nix-darwin-26.05 branch.
@@ -54,99 +59,166 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, determinate, nix-cachyos-kernel, dms, catppuccin, spicetify-nix, zen-browser, nix-index-database, herdr, ... }@inputs:
-  let
-    # Change this to set up for a different user
-    username = "rxue";
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nix-darwin,
+      determinate,
+      treefmt-nix,
+      nix-cachyos-kernel,
+      dms,
+      catppuccin,
+      spicetify-nix,
+      zen-browser,
+      nix-index-database,
+      herdr,
+      ...
+    }@inputs:
+    let
+      # Change this to set up for a different user
+      username = "rxue";
 
-    # Facts shared by every machine.
-    baseUserConfig = {
-      inherit username;
-      # Directories for the tmux/herdr sessionizers to search
-      # Missing paths are silently ignored (find ... 2>/dev/null)
-      sessionizerPaths = [
-        "~/Documents/Work"
-        "~/Documents/Programming"
-        "/Users/Programming"
-        "~/Documents/Textbooks"
-      ];
-    };
-
-    # Per-machine facts. These live here rather than in one shared attrset so that
-    # no machine ever has to edit a committed line to describe itself: to bring
-    # back work mode, add a host with isWork = true instead of flipping a flag.
-    # (isWork gates the Anduril git identity and tooling — see home/git.nix.)
-    hostConfigs = {
-      workstation = { isWork = false; };
-      macbook = { isWork = false; };
-    };
-
-    userConfigFor = host: baseUserConfig // hostConfigs.${host};
-
-    # NixOS-specific pkgs
-    linuxPkgs = import nixpkgs {
-      system = "x86_64-linux";
-      config = {
-        allowUnfree = true;
-        nvidia.acceptLicense = true;
+      # Facts shared by every machine.
+      baseUserConfig = {
+        inherit username;
+        # Directories for the tmux/herdr sessionizers to search
+        # Missing paths are silently ignored (find ... 2>/dev/null)
+        sessionizerPaths = [
+          "~/Documents/Work"
+          "~/Documents/Programming"
+          "/Users/Programming"
+          "~/Documents/Textbooks"
+        ];
       };
-      overlays = [
-        nix-cachyos-kernel.overlays.default
-      ];
+
+      # Per-machine facts. These live here rather than in one shared attrset so that
+      # no machine ever has to edit a committed line to describe itself: to bring
+      # back work mode, add a host with isWork = true instead of flipping a flag.
+      # (isWork gates the Anduril git identity and tooling — see home/git.nix.)
+      hostConfigs = {
+        workstation = {
+          isWork = false;
+        };
+        macbook = {
+          isWork = false;
+        };
+      };
+
+      userConfigFor = host: baseUserConfig // hostConfigs.${host};
+
+      # NixOS-specific pkgs
+      linuxPkgs = import nixpkgs {
+        system = "x86_64-linux";
+        config = {
+          allowUnfree = true;
+          nvidia.acceptLicense = true;
+        };
+        overlays = [
+          nix-cachyos-kernel.overlays.default
+        ];
+      };
+
+      # macOS-specific pkgs
+      darwinPkgs = import nixpkgs {
+        system = "aarch64-darwin";
+        config.allowUnfree = true;
+      };
+
+      treefmtFor = pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+      treefmtDarwin = treefmtFor darwinPkgs;
+      treefmtLinux = treefmtFor linuxPkgs;
+
+    in
+    {
+      # `nix fmt`
+      formatter = {
+        aarch64-darwin = treefmtDarwin.config.build.wrapper;
+        x86_64-linux = treefmtLinux.config.build.wrapper;
+      };
+
+      # `nix flake check` (add --all-systems to include the Linux entries)
+      checks = {
+        aarch64-darwin = {
+          formatting = treefmtDarwin.config.build.check self;
+          darwin-system = self.darwinConfigurations.macbook.system;
+          mac-home = self.homeConfigurations."${username}@macbook".activationPackage;
+        };
+        # Linux gets formatting only. Evaluating the Linux home config from macOS
+        # is not possible: catppuccin-nix uses import-from-derivation (see its
+        # fzf module), so evaluation would have to *build* Linux derivations.
+        # Checking the NixOS side needs a Linux builder, or running this on the
+        # workstation. (Stylix avoids IFD, if cross-platform checks ever matter.)
+        x86_64-linux = {
+          formatting = treefmtLinux.config.build.check self;
+        };
+      };
+
+      # NixOS (integrated Home Manager)
+      nixosConfigurations.workstation = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+          userConfig = userConfigFor "workstation";
+          pkgs = linuxPkgs;
+        };
+        modules = [
+          ./hosts/workstation
+
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = {
+              inherit inputs;
+              userConfig = userConfigFor "workstation";
+              isNixOS = true;
+            };
+            home-manager.users.${username} = import ./home;
+          }
+        ];
+      };
+
+      # macOS (nix-darwin with Home Manager as a module)
+      darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+        specialArgs = {
+          inherit inputs;
+          userConfig = userConfigFor "macbook";
+        };
+        modules = [
+          ./hosts/macbook
+
+          inputs.determinate.darwinModules.default
+
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            # Standalone HM already owns some of these paths; back them up rather
+            # than failing activation (cf. the lazygit config clobber).
+            home-manager.backupFileExtension = "bak";
+            home-manager.extraSpecialArgs = {
+              inherit inputs;
+              userConfig = userConfigFor "macbook";
+              isNixOS = false;
+            };
+            home-manager.users.${username} = import ./home;
+          }
+        ];
+      };
+
+      # macOS (standalone Home Manager)
+      # Kept until darwinConfigurations.macbook is proven on this machine, then
+      # remove so the two cannot drift.
+      homeConfigurations."${username}@macbook" = home-manager.lib.homeManagerConfiguration {
+        pkgs = darwinPkgs;
+        extraSpecialArgs = {
+          inherit inputs;
+          userConfig = userConfigFor "macbook";
+          isNixOS = false;
+        };
+        modules = [ ./home ];
+      };
     };
-
-    # macOS-specific pkgs
-    darwinPkgs = import nixpkgs {
-      system = "aarch64-darwin";
-      config.allowUnfree = true;
-    };
-  in
-  {
-    # NixOS (integrated Home Manager)
-    nixosConfigurations.workstation = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = { inherit inputs; userConfig = userConfigFor "workstation"; pkgs = linuxPkgs; };
-      modules = [
-        ./hosts/workstation
-
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit inputs; userConfig = userConfigFor "workstation"; isNixOS = true; };
-          home-manager.users.${username} = import ./home;
-        }
-      ];
-    };
-
-    # macOS (nix-darwin with Home Manager as a module)
-    darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit inputs; userConfig = userConfigFor "macbook"; };
-      modules = [
-        ./hosts/macbook
-
-        inputs.determinate.darwinModules.default
-
-        home-manager.darwinModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          # Standalone HM already owns some of these paths; back them up rather
-          # than failing activation (cf. the lazygit config clobber).
-          home-manager.backupFileExtension = "bak";
-          home-manager.extraSpecialArgs = { inherit inputs; userConfig = userConfigFor "macbook"; isNixOS = false; };
-          home-manager.users.${username} = import ./home;
-        }
-      ];
-    };
-
-    # macOS (standalone Home Manager)
-    # Kept until darwinConfigurations.macbook is proven on this machine, then
-    # remove so the two cannot drift.
-    homeConfigurations."${username}@macbook" = home-manager.lib.homeManagerConfiguration {
-      pkgs = darwinPkgs;
-      extraSpecialArgs = { inherit inputs; userConfig = userConfigFor "macbook"; isNixOS = false; };
-      modules = [ ./home ];
-    };
-  };
 }
