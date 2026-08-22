@@ -32,9 +32,17 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # herdr — agent-aware terminal multiplexer (not in our pinned nixpkgs yet).
+    # Pinned by tag; bump the tag to update. Deliberately does NOT follow our
+    # nixpkgs: herdr pins a newer nixpkgs + rust-overlay to build against.
+    herdr = {
+      url = "github:herdrdev/herdr/v0.8.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-cachyos-kernel, dms, catppuccin, spicetify-nix, zen-browser, nix-index-database, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nix-cachyos-kernel, dms, catppuccin, spicetify-nix, zen-browser, nix-index-database, herdr, ... }@inputs:
   let
     # Change this to set up for a different user
     username = "rxue";
@@ -43,12 +51,14 @@
     userConfig = {
       inherit username;
       # Whether this is a work machine (disables personal git credentials, etc.)
-      isWork = true;
-      # Directories for tmux-sessionizer to search
+      isWork = false;
+      # Directories for the tmux/herdr sessionizers to search
       # Missing paths are silently ignored (find ... 2>/dev/null)
       sessionizerPaths = [
         "~/Documents/Work"
         "~/Documents/Programming"
+        "/Users/Programming"
+        "~/Documents/Textbooks"
       ];
     };
 

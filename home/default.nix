@@ -14,6 +14,7 @@ in
     ./neovim.nix
     ./git.nix
     ./zsh.nix
+    ./herdr.nix
   ] ++ lib.optionals isNixOS [
     # NixOS-only modules (these inputs aren't available on macOS)
     inputs.spicetify-nix.homeManagerModules.default
