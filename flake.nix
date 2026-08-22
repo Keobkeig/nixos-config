@@ -138,7 +138,12 @@
         x86_64-linux = treefmtLinux.config.build.wrapper;
       };
 
-      # `nix flake check` (add --all-systems to include the Linux entries)
+      # Checks. NOTE: plain `nix flake check` fails on macOS because it also
+      # checks nixosConfigurations.workstation, whose
+      # hosts/workstation/hardware-configuration.nix is gitignored and therefore
+      # invisible to the flake. Until that is resolved, run the checks directly:
+      #
+      #   nix build --no-link .#checks.aarch64-darwin.{formatting,darwin-system,mac-home}
       checks = {
         aarch64-darwin = {
           formatting = treefmtDarwin.config.build.check self;
