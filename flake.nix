@@ -33,6 +33,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-darwin = {
+      # nix-darwin enforces that its release matches nixpkgs'. Our nixpkgs pin is
+      # currently 26.05, so this tracks the matching nix-darwin-26.05 branch.
+      # IMPORTANT: bump this branch in lockstep whenever nixpkgs moves to a new
+      # release (master pairs with nixpkgs-unstable), or eval will fail loudly.
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Determinate's own module, so nix-darwin can opt out of managing Nix.
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
+
     # herdr — agent-aware terminal multiplexer (not in our pinned nixpkgs yet).
     # Pinned by tag; bump the tag to update. Deliberately does NOT follow our
     # nixpkgs: herdr pins a newer nixpkgs + rust-overlay to build against.
@@ -42,7 +54,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-cachyos-kernel, dms, catppuccin, spicetify-nix, zen-browser, nix-index-database, herdr, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, determinate, nix-cachyos-kernel, dms, catppuccin, spicetify-nix, zen-browser, nix-index-database, herdr, ... }@inputs:
   let
     # Change this to set up for a different user
     username = "rxue";
@@ -107,7 +119,30 @@
       ];
     };
 
+    # macOS (nix-darwin with Home Manager as a module)
+    darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+      specialArgs = { inherit inputs; userConfig = userConfigFor "macbook"; };
+      modules = [
+        ./hosts/macbook
+
+        inputs.determinate.darwinModules.default
+
+        home-manager.darwinModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          # Standalone HM already owns some of these paths; back them up rather
+          # than failing activation (cf. the lazygit config clobber).
+          home-manager.backupFileExtension = "bak";
+          home-manager.extraSpecialArgs = { inherit inputs; userConfig = userConfigFor "macbook"; isNixOS = false; };
+          home-manager.users.${username} = import ./home;
+        }
+      ];
+    };
+
     # macOS (standalone Home Manager)
+    # Kept until darwinConfigurations.macbook is proven on this machine, then
+    # remove so the two cannot drift.
     homeConfigurations."${username}@macbook" = home-manager.lib.homeManagerConfiguration {
       pkgs = darwinPkgs;
       extraSpecialArgs = { inherit inputs; userConfig = userConfigFor "macbook"; isNixOS = false; };
