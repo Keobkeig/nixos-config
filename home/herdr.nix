@@ -6,6 +6,8 @@ let
   herdrPkg = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   sessionizer = "${config.home.homeDirectory}/.local/scripts/herdr-sessionizer";
+
+  palette = import ../lib/palette.nix;
 in
 {
   home.packages = [ herdrPkg ];
@@ -53,20 +55,20 @@ in
     name = "catppuccin"
 
     [theme.custom]
-    panel_bg    = "#1e2030" # mantle — sidebar, recessed from pane bg
-    surface_dim = "#363a4f" # surface0 — tmux thm_gray
-    text        = "#cad3f5" # tmux thm_fg
-    subtext0    = "#a5adcb"
-    overlay0    = "#6e738d"
-    overlay1    = "#8087a2"
-    accent      = "#8aadf4" # tmux thm_blue — pane-active-border
-    blue        = "#8aadf4"
-    mauve       = "#c6a0f6" # tmux thm_magenta
-    red         = "#ed8796"
-    green       = "#a6da95"
-    yellow      = "#eed49f"
-    peach       = "#f5a97f" # tmux thm_orange
-    teal        = "#8bd5ca"
+    panel_bg    = "${palette.mantle}" # mantle — sidebar, recessed from pane bg
+    surface_dim = "${palette.surface0}" # surface0 — tmux thm_gray
+    text        = "${palette.text}" # tmux thm_fg
+    subtext0    = "${palette.subtext0}"
+    overlay0    = "${palette.overlay0}"
+    overlay1    = "${palette.overlay1}"
+    accent      = "${palette.blue}" # tmux thm_blue — pane-active-border
+    blue        = "${palette.blue}"
+    mauve       = "${palette.mauve}" # tmux thm_magenta
+    red         = "${palette.red}"
+    green       = "${palette.green}"
+    yellow      = "${palette.yellow}"
+    peach       = "${palette.peach}" # tmux thm_orange
+    teal        = "${palette.teal}"
 
     # ============================================= #
     # Keybindings                                   #
@@ -170,7 +172,7 @@ in
     # tmux: set-option -g status-position top
     tab_bar_position = "top"
 
-    accent = "#8aadf4"
+    accent = "${palette.blue}"
 
     # tmux new-window took no name prompt; keep creation instant.
     prompt_new_tab_name = false

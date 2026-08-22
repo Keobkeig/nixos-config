@@ -3,6 +3,7 @@
 let
   isLinux = pkgs.stdenv.isLinux;
   isDarwin = pkgs.stdenv.isDarwin;
+  palette = import ../lib/palette.nix;
 in
 {
   imports = [
@@ -253,9 +254,9 @@ in
       "--height 40%"
       "--layout=reverse"
       "--border"
-      "--color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796"
-      "--color=fg:#cad3f5,header:#ed8796,info:#c6a0f6,pointer:#f4dbd6"
-      "--color=marker:#f4dbd6,fg+:#cad3f5,prompt:#c6a0f6,hl+:#ed8796"
+      "--color=bg+:${palette.surface0},bg:${palette.base},spinner:${palette.rosewater},hl:${palette.red}"
+      "--color=fg:${palette.text},header:${palette.red},info:${palette.mauve},pointer:${palette.rosewater}"
+      "--color=marker:${palette.rosewater},fg+:${palette.text},prompt:${palette.mauve},hl+:${palette.red}"
     ];
     fileWidgetCommand = "fd --type f --hidden --follow --exclude .git";
     changeDirWidgetCommand = "fd --type d --hidden --follow --exclude .git";
