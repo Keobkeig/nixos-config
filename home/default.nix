@@ -79,6 +79,9 @@ in
     file
     watch
 
+    # Nix tooling
+    nh  # nicer switch/diff/clean wrapper; reads NH_FLAKE below
+
     # macOS-specific (Linux has these system-wide)
     coreutils
     findutils
@@ -115,6 +118,8 @@ in
     CARGO_HOME = "$HOME/.cargo";
     RUSTUP_HOME = "$HOME/.rustup";
     EDITOR = "nvim";
+    # Where `nh home/darwin/os switch` looks for this flake
+    NH_FLAKE = "$HOME/nixos-config";
     # Suppress false-positive warning: zoxide IS initialized last in .zshrc,
     # but p10k instant prompt makes it think otherwise
     _ZO_DOCTOR = "0";

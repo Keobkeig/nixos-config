@@ -54,6 +54,9 @@
     awscli2
     google-cloud-sdk
 
+    # Nix tooling
+    nh
+
     # Misc
     file
     which
