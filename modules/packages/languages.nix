@@ -35,7 +35,7 @@
     typescript-language-server
     vscode-langservers-extracted
     lua-language-server
-    nil  # Nix LSP
+    nil # Nix LSP
     nixpkgs-fmt
     pyright
     ruff

@@ -1,4 +1,10 @@
-{ config, pkgs, lib, userConfig, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  userConfig,
+  ...
+}:
 
 let
   isLinux = pkgs.stdenv.isLinux;
@@ -30,7 +36,8 @@ in
       user = {
         name = "Richie Xue";
         email = if userConfig.isWork then "rxue@anduril.com" else "angela.xue3@gmail.com";
-      } // lib.optionalAttrs userConfig.isWork {
+      }
+      // lib.optionalAttrs userConfig.isWork {
         # SSH commit signing (GitHub Signing Key on GHE).
         signingkey = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
       };
@@ -46,8 +53,7 @@ in
       http.postBuffer = 524288000;
 
       credential.helper =
-        if isDarwin then "osxkeychain"
-        else "${pkgs.git-credential-libsecret}/bin/git-credential-libsecret";
+        if isDarwin then "osxkeychain" else "${pkgs.git-credential-libsecret}/bin/git-credential-libsecret";
 
       alias = {
         co = "checkout";
@@ -64,9 +70,11 @@ in
       # Machine-local overrides (work email, signing key, etc.) — not managed by Nix.
       # Keys in ~/.gitconfig.local win any conflict with settings above.
       include.path = "~/.gitconfig.local";
-    } // lib.optionalAttrs isDarwin {
+    }
+    // lib.optionalAttrs isDarwin {
       "credential \"https://dev.azure.com\"".useHttpPath = true;
-    } // lib.optionalAttrs userConfig.isWork {
+    }
+    // lib.optionalAttrs userConfig.isWork {
       # Anduril: rewrite https GHE URLs to ssh so go-mod / cargo / etc. work.
       "url \"git@ghe.anduril.dev:\"".insteadOf = "https://ghe.anduril.dev";
       gpg.format = "ssh";
@@ -104,8 +112,13 @@ in
   # (enable = settings != {}) since we set no `settings`, and would write a
   # read-only store path. mkForce on both source and enable makes our writable
   # out-of-store symlink win (runtime `o` edits work). Same rationale as gh above.
-  home.file."${if isDarwin then "Library/Application Support/lazygit/config.yml" else ".config/lazygit/config.yml"}" = {
-    enable = lib.mkForce true;
-    source = lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${repoPath}/dotfiles/lazygit/config.yml");
-  };
+  home.file."${
+    if isDarwin then "Library/Application Support/lazygit/config.yml" else ".config/lazygit/config.yml"
+  }" =
+    {
+      enable = lib.mkForce true;
+      source = lib.mkForce (
+        config.lib.file.mkOutOfStoreSymlink "${repoPath}/dotfiles/lazygit/config.yml"
+      );
+    };
 }

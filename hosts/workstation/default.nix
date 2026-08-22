@@ -1,4 +1,10 @@
-{ config, pkgs, inputs, userConfig, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  userConfig,
+  ...
+}:
 
 {
   imports = [
@@ -55,7 +61,13 @@
   users.users.${userConfig.username} = {
     isNormalUser = true;
     description = userConfig.username;
-    extraGroups = [ "networkmanager" "wheel" "docker" "audio" "video" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "audio"
+      "video"
+    ];
     shell = pkgs.zsh;
   };
 
@@ -71,7 +83,10 @@
   # Nix settings
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       auto-optimise-store = true;
       substituters = [
         "https://cache.nixos.org"

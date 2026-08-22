@@ -1,9 +1,14 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   # Powerlevel10k config file (symlink for edit-without-rebuild)
-  home.file.".p10k.zsh".source = config.lib.file.mkOutOfStoreSymlink
-    "${config.home.homeDirectory}/nixos-config/dotfiles/zsh/p10k.zsh";
+  home.file.".p10k.zsh".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-config/dotfiles/zsh/p10k.zsh";
 
   programs.zsh = {
     enable = true;
@@ -23,7 +28,7 @@
     oh-my-zsh = {
       enable = true;
       plugins = [ "git" ];
-      theme = "";  # Disable oh-my-zsh theme - using powerlevel10k via plugins
+      theme = ""; # Disable oh-my-zsh theme - using powerlevel10k via plugins
     };
 
     plugins = [

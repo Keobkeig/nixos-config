@@ -1,4 +1,11 @@
-{ config, pkgs, lib, inputs, userConfig, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  userConfig,
+  ...
+}:
 
 let
   # herdr is not in our pinned nixpkgs yet, so it comes from its own flake,

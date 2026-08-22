@@ -1,4 +1,11 @@
-{ config, pkgs, lib, inputs, userConfig, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  userConfig,
+  ...
+}:
 
 {
   # macOS host (richie-mpb).
