@@ -147,8 +147,8 @@
       checks = {
         aarch64-darwin = {
           formatting = treefmtDarwin.config.build.check self;
+          # Covers Home Manager too: it runs as a nix-darwin module.
           darwin-system = self.darwinConfigurations.macbook.system;
-          mac-home = self.homeConfigurations."${username}@macbook".activationPackage;
         };
         # Linux gets formatting only. Evaluating the Linux home config from macOS
         # is not possible: catppuccin-nix uses import-from-derivation (see its
@@ -211,19 +211,6 @@
             home-manager.users.${username} = import ./home;
           }
         ];
-      };
-
-      # macOS (standalone Home Manager)
-      # Kept until darwinConfigurations.macbook is proven on this machine, then
-      # remove so the two cannot drift.
-      homeConfigurations."${username}@macbook" = home-manager.lib.homeManagerConfiguration {
-        pkgs = darwinPkgs;
-        extraSpecialArgs = {
-          inherit inputs;
-          userConfig = userConfigFor "macbook";
-          isNixOS = false;
-        };
-        modules = [ ./home ];
       };
     };
 }
