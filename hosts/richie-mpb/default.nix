@@ -32,6 +32,21 @@
     home = "/Users/${userConfig.username}";
   };
 
+  # nix-darwin's /etc/zshrc otherwise runs a full compinit, then bashcompinit,
+  # then `promptinit && prompt suse` -- measured ~0.4s standalone, and the prompt
+  # theme is discarded by powerlevel10k moments later. oh-my-zsh already runs
+  # compinit (with -i, and its own dump) after $fpath is final, and init.zsh runs
+  # bashcompinit itself for terraform, so nothing here is load-bearing.
+  #
+  # `enable` MUST stay true: it installs /etc/zshenv, which is what puts
+  # /etc/profiles/per-user/$USER/bin on PATH.
+  programs.zsh = {
+    enable = true;
+    enableCompletion = false;
+    enableBashCompletion = false;
+    promptInit = "";
+  };
+
   # Set once at install, then left alone — same contract as NixOS stateVersion.
   system.stateVersion = 7;
 }
