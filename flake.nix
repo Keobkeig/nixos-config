@@ -101,7 +101,9 @@
         workstation = {
           isWork = false;
         };
-        macbook = {
+        # Keyed by hostname so `nh darwin switch` / `darwin-rebuild` need no
+        # -H flag, matching how workstation already works.
+        richie-mpb = {
           isWork = false;
         };
       };
@@ -148,7 +150,7 @@
         aarch64-darwin = {
           formatting = treefmtDarwin.config.build.check self;
           # Covers Home Manager too: it runs as a nix-darwin module.
-          darwin-system = self.darwinConfigurations.macbook.system;
+          darwin-system = self.darwinConfigurations.richie-mpb.system;
         };
         # Linux gets formatting only. Evaluating the Linux home config from macOS
         # is not possible: catppuccin-nix uses import-from-derivation (see its
@@ -186,13 +188,13 @@
       };
 
       # macOS (nix-darwin with Home Manager as a module)
-      darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+      darwinConfigurations.richie-mpb = nix-darwin.lib.darwinSystem {
         specialArgs = {
           inherit inputs;
-          userConfig = userConfigFor "macbook";
+          userConfig = userConfigFor "richie-mpb";
         };
         modules = [
-          ./hosts/macbook
+          ./hosts/richie-mpb
 
           inputs.determinate.darwinModules.default
 
@@ -205,7 +207,7 @@
             home-manager.backupFileExtension = "bak";
             home-manager.extraSpecialArgs = {
               inherit inputs;
-              userConfig = userConfigFor "macbook";
+              userConfig = userConfigFor "richie-mpb";
               isNixOS = false;
             };
             home-manager.users.${username} = import ./home;
