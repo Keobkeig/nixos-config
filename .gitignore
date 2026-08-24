@@ -1,6 +1,5 @@
 result
 result-*
-hardware-configuration.nix
 .direnv/
 *.qcow2
 .pre-commit-config.yaml
