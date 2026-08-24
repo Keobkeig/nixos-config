@@ -191,3 +191,8 @@ binds {
     XF86MonBrightnessUp { spawn "brightnessctl" "set" "5%+"; }
     XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
 }
+
+// Experimental / in-flux settings live here so this file stays the stable core.
+// niri watches included files and live-reloads them, and `optional=true` means a
+// missing file is not an error. Supported since niri 25.11.
+include optional=true "local.kdl"

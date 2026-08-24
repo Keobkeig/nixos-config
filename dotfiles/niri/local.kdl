@@ -1,0 +1,3 @@
+// Scratch space for niri settings you are actively tuning.
+// Included by config.kdl; same structure as the main config, merged on top.
+// niri live-reloads this on save, so no rebuild is needed.

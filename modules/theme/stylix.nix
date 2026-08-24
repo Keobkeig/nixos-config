@@ -22,6 +22,15 @@
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     polarity = "dark";
 
+    # A wallpaper was never set. Generated from the palette rather than shipping a
+    # binary asset: solid Macchiato base (#24273a) at the panel's native
+    # 2560x1440. Because base16Scheme is set above, Stylix uses this purely as a
+    # wallpaper and does not derive colours from it, so no genetic-algorithm
+    # build runs during evaluation. Swap in a real image any time.
+    image = pkgs.runCommand "wallpaper-macchiato.png" { nativeBuildInputs = [ pkgs.imagemagick ]; } ''
+      magick -size 2560x1440 xc:'#24273a' "$out"
+    '';
+
     fonts = {
       monospace = {
         package = pkgs.nerd-fonts.jetbrains-mono;
