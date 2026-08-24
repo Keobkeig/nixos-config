@@ -38,6 +38,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    stylix = {
+      # Linux theming engine: one scheme drives GTK, Qt, cursors, fonts and apps.
+      # Pinned to the release matching our nixpkgs, same discipline as nix-darwin;
+      # bump both in lockstep.
+      url = "github:nix-community/stylix/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-darwin = {
       # nix-darwin enforces that its release matches nixpkgs'. Our nixpkgs pin is
       # currently 26.05, so this tracks the matching nix-darwin-26.05 branch.
@@ -67,6 +75,7 @@
       nix-darwin,
       determinate,
       treefmt-nix,
+      stylix,
       nix-cachyos-kernel,
       dms,
       catppuccin,

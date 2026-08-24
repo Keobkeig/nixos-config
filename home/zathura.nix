@@ -2,7 +2,7 @@
 
 {
   # Colors come from the catppuccin module (flavor=macchiato, accent=mauve in home/default.nix)
-  catppuccin.zathura.enable = true;
+  # Themed by Stylix on Linux; catppuccin.enable is false there.
 
   programs.zathura = {
     enable = true;

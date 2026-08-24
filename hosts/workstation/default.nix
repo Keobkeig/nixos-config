@@ -36,7 +36,7 @@
     ../../modules/services/keyring.nix
 
     # Theme
-    ../../modules/theme/catppuccin.nix
+    ../../modules/theme/stylix.nix
   ];
 
   # Hostname

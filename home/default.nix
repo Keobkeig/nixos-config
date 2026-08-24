@@ -33,6 +33,7 @@ in
     ./spicetify.nix
     ./zathura.nix
     ./gaming.nix
+    ./stylix.nix
   ];
 
   home.username = userConfig.username;
@@ -43,7 +44,7 @@ in
   # bat (configured via programs.bat so catppuccin can write theme files to
   # ~/.config/bat/themes/, which delta needs for its syntax-theme setting)
   programs.bat.enable = true;
-  catppuccin.bat.enable = true;
+  catppuccin.bat.enable = !isLinux;
 
   # comma: run any nix package ephemerally with `, <command>`
   # uses nix-index-database (pre-built index, no manual nix-index runs needed)
@@ -150,8 +151,12 @@ in
   };
 
   # Catppuccin theme (Macchiato flavor)
+  # Stylix owns theming on Linux (modules/theme/stylix.nix). catppuccin-nix stays
+  # for macOS, where there is no GTK/Qt layer and Stylix would add little.
+  # It also uses import-from-derivation, which is what prevented this config
+  # from being evaluated off-machine.
   catppuccin = {
-    enable = true;
+    enable = !isLinux;
     flavor = "macchiato";
     accent = "mauve";
     # catppuccin.enable turns on every sub-module, including kvantum, which
@@ -179,7 +184,7 @@ in
       vim_keys = true;
     };
   };
-  catppuccin.btop.enable = true;
+  catppuccin.btop.enable = !isLinux;
 
   # Fastfetch (system info)
   programs.fastfetch = {
@@ -297,38 +302,7 @@ in
     ]; # Replace cd with zoxide
   };
 
-  # GTK theme (Linux only)
-  gtk = lib.mkIf isLinux {
-    enable = true;
-    theme = {
-      name = "catppuccin-macchiato-mauve-standard";
-      package = pkgs.catppuccin-gtk.override {
-        accents = [ "mauve" ];
-        variant = "macchiato";
-      };
-    };
-    # Icon package is left to catppuccin's gtk module, which sets
-    # catppuccin-papirus-folders (Papirus with Catppuccin folder colors).
-    # Defining it here too made gtk.iconTheme.package a conflicting definition
-    # and broke evaluation on Linux.
-    iconTheme.name = "Papirus-Dark";
-    cursorTheme = {
-      name = "catppuccin-macchiato-dark-cursors";
-      package = pkgs.catppuccin-cursors.macchiatoDark;
-      size = 24;
-    };
-    font = {
-      name = "Noto Sans";
-      size = 11;
-    };
-  };
-
-  # Qt theme (Linux only)
-  qt = lib.mkIf isLinux {
-    enable = true;
-    platformTheme.name = "gtk";
-    style.name = "gtk2";
-  };
+  # GTK and Qt theming are set by Stylix (modules/theme/stylix.nix).
 
   # Niri config symlink (Linux only)
   xdg.configFile."niri/config.kdl" = lib.mkIf isLinux {
