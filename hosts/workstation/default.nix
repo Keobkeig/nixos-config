@@ -20,7 +20,7 @@
 
     # Desktop
     ../../modules/desktop/niri.nix
-    ../../modules/desktop/sddm.nix
+    ../../modules/desktop/greetd.nix
     ../../modules/desktop/xdg.nix
 
     # Packages

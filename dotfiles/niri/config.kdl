@@ -89,7 +89,7 @@ window-rule {
 }
 
 window-rule {
-    match app-id="kitty"
+    match app-id="com.mitchellh.ghostty"
     default-column-width { proportion 0.5; }
 }
 
@@ -110,9 +110,9 @@ binds {
     Mod+Shift+P { power-off-monitors; }
 
     // Apps
-    Mod+Return { spawn "kitty"; }
+    Mod+Return { spawn "ghostty"; }
     Mod+D { spawn "dms-launcher"; }  // DMS launcher
-    Mod+E { spawn "thunar"; }
+    Mod+E { spawn "nautilus"; }
     Mod+B { spawn "zen"; }
 
     // Screenshot (selection with satty annotation)

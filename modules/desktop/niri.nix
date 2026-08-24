@@ -9,6 +9,10 @@
     xwayland-satellite
     wl-clipboard
     xdg-utils
+    # Bound to XF86MonBrightness{Up,Down} in dotfiles/niri/config.kdl but was
+    # never installed. (wpctl, also bound there, comes from wireplumber via
+    # services.pipewire.)
+    brightnessctl
   ];
 
   # Session environment
