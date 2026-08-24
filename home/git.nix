@@ -53,7 +53,10 @@ in
       http.postBuffer = 524288000;
 
       credential.helper =
-        if isDarwin then "osxkeychain" else "${pkgs.git-credential-libsecret}/bin/git-credential-libsecret";
+        if isDarwin then
+          "osxkeychain"
+        else
+          "${pkgs.git.override { withLibsecret = true; }}/bin/git-credential-libsecret";
 
       alias = {
         co = "checkout";

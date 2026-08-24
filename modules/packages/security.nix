@@ -10,8 +10,7 @@
     sherlock
 
     # Network
-    nmap
-    ncat
+    nmap # also provides ncat; there is no separate `ncat` attribute
     wireshark
     tcpdump
 

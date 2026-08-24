@@ -42,7 +42,7 @@
     lutris
 
     # Zen Browser
-    inputs.zen-browser.packages.${pkgs.system}.default
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Enable Steam
@@ -59,7 +59,7 @@
   # Thunar plugins
   programs.thunar = {
     enable = true;
-    plugins = with pkgs.xfce; [
+    plugins = with pkgs; [
       thunar-volman
       thunar-archive-plugin
     ];
