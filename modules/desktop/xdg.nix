@@ -7,6 +7,9 @@
     wlr.enable = true;
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
+      # The niri block below lists "gnome" as its first default, but this portal
+      # was never installed, so that fallback could not resolve.
+      xdg-desktop-portal-gnome
     ];
     config = {
       common = {

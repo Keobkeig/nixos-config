@@ -3,7 +3,7 @@
 # Why this exists: the same hexes were hand-copied into several generated configs
 # (herdr's [theme.custom], fzf's --color flags), so a palette tweak meant editing
 # each one. Files that are deliberately writable-without-rebuild
-# (dotfiles/zsh/p10k.zsh, dotfiles/tmux/tmux.local.conf, dotfiles/kitty) keep
+# (dotfiles/zsh/p10k.zsh, dotfiles/tmux/tmux.local.conf) keep
 # their own literals on purpose — they are not Nix's business.
 #
 # Not sourced from the catppuccin flake input: `catppuccin#palette` is a

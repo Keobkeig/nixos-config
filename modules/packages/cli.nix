@@ -54,6 +54,9 @@
     awscli2
     google-cloud-sdk
 
+    # File manager (terminal)
+    yazi
+
     # Nix tooling
     nh
 

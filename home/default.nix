@@ -18,7 +18,6 @@ in
     inputs.catppuccin.homeModules.catppuccin
     inputs.nix-index-database.homeModules.nix-index
 
-    ./kitty.nix
     ./ghostty.nix
     ./neovim.nix
     ./git.nix
@@ -92,6 +91,9 @@ in
       # Misc
       file
       watch
+
+      # File manager (terminal)
+      yazi
 
       # Nix tooling
       nh # nicer switch/diff/clean wrapper; reads NH_FLAKE below
