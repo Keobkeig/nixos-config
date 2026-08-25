@@ -39,6 +39,22 @@
     ../../modules/theme/stylix.nix
   ];
 
+  # Package set. These used to be baked into a pre-built `linuxPkgs` handed in
+  # through specialArgs, which silently disabled the nixpkgs.* options -- an
+  # overlay added in any module would have been discarded with no error. Built
+  # through the module system instead, so these actually take effect.
+  nixpkgs = {
+    hostPlatform = "x86_64-linux";
+    config = {
+      allowUnfree = true;
+      nvidia.acceptLicense = true;
+    };
+    overlays = [
+      # Provides cachyosKernels, used by modules/hardware/boot.nix
+      inputs.nix-cachyos-kernel.overlays.default
+    ];
+  };
+
   # Hostname
   networking.hostName = "workstation";
 

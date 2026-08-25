@@ -119,7 +119,9 @@
 
       userConfigFor = host: baseUserConfig // hostConfigs.${host};
 
-      # NixOS-specific pkgs
+      # NixOS-specific pkgs. Used only by treefmt below -- the workstation builds
+      # its own pkgs through the module system (see hosts/workstation), so that
+      # nixpkgs.config and nixpkgs.overlays actually take effect there.
       linuxPkgs = import nixpkgs {
         system = "x86_64-linux";
         config = {
@@ -149,35 +151,42 @@
         x86_64-linux = treefmtLinux.config.build.wrapper;
       };
 
-      # Checks. NOTE: plain `nix flake check` fails on macOS because it also
-      # checks nixosConfigurations.workstation, whose
-      # hosts/workstation/hardware-configuration.nix is gitignored and therefore
-      # invisible to the flake. Until that is resolved, run the checks directly:
+      # Checks.
       #
-      #   nix build --no-link .#checks.aarch64-darwin.{formatting,darwin-system,mac-home}
+      #   nix flake check                 # this system only
+      #   nix flake check --all-systems   # both hosts (see below)
+      #
+      # The x86_64-linux entries cannot be *built* on macOS, but --all-systems
+      # still evaluates them, which is what catches option typos, renamed
+      # attributes and conflicting definitions in the shared home/ modules.
+      # That is exactly the class of bug that reached master unnoticed before
+      # the workstation config became evaluable.
       checks = {
         aarch64-darwin = {
           formatting = treefmtDarwin.config.build.check self;
           # Covers Home Manager too: it runs as a nix-darwin module.
           darwin-system = self.darwinConfigurations.richie-mpb.system;
         };
-        # Linux gets formatting only. Evaluating the Linux home config from macOS
-        # is not possible: catppuccin-nix uses import-from-derivation (see its
-        # fzf module), so evaluation would have to *build* Linux derivations.
-        # Checking the NixOS side needs a Linux builder, or running this on the
-        # workstation. (Stylix avoids IFD, if cross-platform checks ever matter.)
         x86_64-linux = {
           formatting = treefmtLinux.config.build.check self;
+          # Evaluable from macOS since Stylix replaced catppuccin-nix, which used
+          # import-from-derivation and would have required building Linux
+          # derivations mid-evaluation.
+          workstation = self.nixosConfigurations.workstation.config.system.build.toplevel;
         };
       };
 
       # NixOS (integrated Home Manager)
+      #
+      # No `system` and no `pkgs` here on purpose: both are set through the
+      # module system in hosts/workstation (nixpkgs.hostPlatform, nixpkgs.config,
+      # nixpkgs.overlays). Handing nixosSystem a pre-built pkgs via specialArgs
+      # silently disables those options, so an overlay added in a module would
+      # have been discarded with no error.
       nixosConfigurations.workstation = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
           userConfig = userConfigFor "workstation";
-          pkgs = linuxPkgs;
         };
         modules = [
           ./hosts/workstation
