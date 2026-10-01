@@ -99,6 +99,21 @@ sudo nixos-rebuild test --flake ~/nixos-config#workstation
 sudo nixos-rebuild build --flake ~/nixos-config#workstation
 ```
 
+### Rebuild the Windows Shell
+
+The portable Windows configuration under [`windows/`](windows/README.md)
+recreates the YASB bar, Catppuccin Macchiato styling, GlazeWM workspaces and
+keybindings, AutoHotkey tiling toggle, wallpaper gallery, and Microsoft web-app
+shortcuts. YASB is the only bar; Zebar is intentionally excluded.
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+.\windows\Install-WindowsSetup.ps1 -InstallPackages -ImportWindotsWallpapers
+```
+
+GlazeWM remains off after login until `Win+Ctrl+Shift+T` is pressed. Open the
+styled keyboard-help popup with `Alt+,`.
+
 ### Update Packages
 
 ```bash

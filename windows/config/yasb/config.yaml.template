@@ -1,0 +1,309 @@
+watch_stylesheet: true
+watch_config: true
+debug: false
+
+bars:
+  primary-bar:
+    enabled: true
+    screens: ["*"]
+    class_name: "yasb-bar"
+    alignment:
+      position: "top"
+      align: "left"
+    blur_effect:
+      enabled: true
+      dark_mode: true
+      round_corners: false
+      border_color: None
+    window_flags:
+      always_on_top: false
+      windows_app_bar: true
+    dimensions:
+      width: "100%"
+      height: 34
+    padding:
+      top: 0
+      left: 0
+      bottom: 0
+      right: 0
+    widgets:
+      left:
+        - "help"
+        - "home"
+        - "apps"
+        - "glazewm_workspaces"
+        - "media"
+      center:
+        - "outlook_meeting"
+        - "clock"
+      right:
+        - "wallpapers"
+        - "window_switcher"
+        - "network_vpn"
+        - "systray"
+        - "volume"
+        - "battery"
+        - "power_menu"
+
+widgets:
+  help:
+    type: "yasb.home.HomeWidget"
+    options:
+      label: "<span>?</span>"
+      menu_list:
+        - { title: "KEYBOARD HELP", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { separator: true }
+        - { title: "Alt+,  Open this popup", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Alt+Space  Raycast", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Win+Ctrl+Shift+T  Toggle tiling", command: "pwsh.exe", args: ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "__USERPROFILE__\\.config\\tiling-trial\\Toggle-GlazeWM.ps1"] }
+        - { separator: true }
+        - { title: "Alt+H/J/K/L  Focus", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Alt+Shift+H/J/K/L  Move", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Alt+1-5  Switch workspace", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Alt+Shift+1-5  Send window", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Alt+Enter  Open terminal", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Alt+Shift+Q  Close window", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Alt+Shift+Space  Tile or float", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Alt+F  Fullscreen", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Alt+R  Resize; H/J/K/L; Esc exits", command: "cmd.exe", args: ["/c", "exit", "0"] }
+        - { title: "Alt+Shift+R  Reload config", command: "cmd.exe", args: ["/c", "exit", "0"] }
+      power_menu: false
+      system_menu: false
+      blur: true
+      round_corners: true
+      round_corners_type: "normal"
+      border_color: "#5b6078"
+      alignment: "left"
+      direction: "down"
+      offset_top: 6
+      keybindings:
+        - keys: "alt+comma"
+          action: "toggle_menu"
+      callbacks:
+        on_left: "toggle_menu"
+
+  home:
+    type: "yasb.home.HomeWidget"
+    options:
+      label: "<span>\ue62a</span>"
+      menu_list:
+        - { title: "User Home", path: "~" }
+        - { title: "Downloads", path: "__USERPROFILE__\\Downloads" }
+        - { title: "Documents", path: "__USERPROFILE__\\Documents" }
+        - { title: "Pictures", path: "__USERPROFILE__\\Pictures" }
+        - { title: "Wallpapers Folder", path: "__USERPROFILE__\\Pictures\\Wallpapers" }
+      system_menu: true
+      power_menu: true
+      blur: true
+      round_corners: true
+      round_corners_type: "normal"
+      border_color: "#5b6078"
+      offset_top: 6
+      alignment: "left"
+      direction: "down"
+
+  apps:
+    type: "yasb.applications.ApplicationsWidget"
+    options:
+      label: "{data}"
+      class_name: "apps"
+      tooltip: true
+      app_list:
+        - { icon: "\uf0f3", launch: "notification_center", name: "Notifications" }
+        - { icon: "\uf0ad", launch: "quick_settings", name: "Quick Settings" }
+        - { icon: "\uf002", launch: "search", name: "Windows Search" }
+        - { icon: "\uf489", launch: "wt", name: "Windows Terminal" }
+        - { icon: "\uf269", launch: '"C:\Program Files\Zen Browser\zen.exe"', name: "Zen" }
+        - { icon: "\uea60", launch: '"C:\Program Files\Microsoft VS Code\Code.exe"', name: "VS Code" }
+        - { icon: "\uee9c", launch: '"__USERPROFILE__\\AppData\\Local\\Programs\\Zed\\zed.exe"', name: "Zed" }
+        - { icon: "\uf0e0", launch: 'explorer.exe "__USERPROFILE__\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Macchiato Apps\\Outlook (Macchiato).lnk"', name: "Outlook" }
+        - { icon: "\uf0c0", launch: 'explorer.exe "__USERPROFILE__\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Macchiato Apps\\Teams (Macchiato).lnk"', name: "Teams" }
+
+  glazewm_workspaces:
+    type: "glazewm.workspaces.GlazewmWorkspacesWidget"
+    options:
+      offline_label: "TILING OFF"
+      populated_label: "{name}"
+      empty_label: "{name}"
+      active_populated_label: "TILING ON | {name}"
+      active_empty_label: "TILING ON | {name}"
+      focused_populated_label: "TILING ON | {name}"
+      focused_empty_label: "TILING ON | {name}"
+      hide_if_offline: false
+      monitor_exclusive: false
+      enable_scroll_switching: true
+      app_icons:
+        enabled_populated: false
+        enabled_active: false
+        size: 16
+        max_icons: 0
+        hide_label: false
+        hide_duplicates: false
+        hide_floating: false
+
+  media:
+    type: "yasb.media.MediaWidget"
+    options:
+      label: "<span>\uf001</span> {title}"
+      label_alt: "<span>\uf001</span> {title} - {artist}"
+      hide_empty: true
+      callbacks:
+        on_left: "toggle_media_menu"
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
+      max_field_size:
+        label: 24
+        label_alt: 32
+      show_thumbnail: false
+      controls_only: false
+      controls_left: false
+      thumbnail_alpha: 80
+      thumbnail_padding: 8
+      thumbnail_corner_radius: 16
+
+  clock:
+    type: "yasb.clock.ClockWidget"
+    options:
+      label: "<span>\uf017</span> {%a %d %b %H:%M }"
+      label_alt: "{%A %d %B %Y %H:%M:%S}"
+      timezones: []
+    calendar:
+      blur: true
+      round_corners: true
+      round_corners_type: "normal"
+      border_color: "#5b6078"
+      alignment: "center"
+      direction: "down"
+      distance: 6
+
+  outlook_meeting:
+    type: "yasb.custom.CustomWidget"
+    options:
+      class_name: "outlook-meeting"
+      label: "<span>\uf073</span> {data}"
+      label_placeholder: "Outlook sign-in required"
+      label_max_length: 44
+      tooltip: true
+      tooltip_label: "Next Outlook meeting: {data}"
+      exec_options:
+        run_cmd: "pwsh.exe -NoProfile -ExecutionPolicy Bypass -File __USERPROFILE__\\.config\\yasb\\scripts\\Get-NextOutlookMeeting.ps1"
+        run_interval: 60000
+        return_format: "string"
+        hide_empty: false
+        use_shell: true
+      callbacks:
+        on_left: 'exec explorer.exe "__USERPROFILE__\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Macchiato Apps\\Outlook Calendar (Macchiato).lnk"'
+        on_right: 'exec explorer.exe "__USERPROFILE__\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Macchiato Apps\\Outlook Calendar (Macchiato).lnk"'
+
+  wallpapers:
+    type: "yasb.wallpapers.WallpapersWidget"
+    options:
+      label: "<span>\udb80\udee9</span>"
+      image_path: "__USERPROFILE__\\Pictures\\Wallpapers"
+      change_automatically: false
+      update_interval: 60
+      gallery:
+        type: "strip"
+        image_width: 220
+        orientation: "portrait"
+        image_corner_radius: 12
+        accent_color: "#7dc4e4"
+      callbacks:
+        on_left: "toggle_gallery"
+        on_middle: "do_nothing"
+        on_right: "change_wallpaper"
+
+  window_switcher:
+    type: "yasb.window_switcher.WindowSwitcherWidget"
+    options:
+      label: "<span>\uf2d2</span>"
+      icon_size: 40
+      max_visible_apps: 6
+      show_title: true
+      popup:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "#5b6078"
+        dark_mode: true
+      callbacks:
+        on_left: "toggle_window_switcher"
+
+  network_vpn:
+    type: "yasb.custom.CustomWidget"
+    options:
+      class_name: "network-vpn"
+      label: "<span>\uf1eb</span> {data}"
+      label_placeholder: "Network..."
+      tooltip: true
+      tooltip_label: "{data}"
+      exec_options:
+        run_cmd: "pwsh.exe -NoProfile -ExecutionPolicy Bypass -File __USERPROFILE__\\.config\\yasb\\scripts\\Get-NetworkVpnStatus.ps1"
+        run_interval: 10000
+        return_format: "string"
+        hide_empty: false
+        use_shell: true
+      callbacks:
+        on_left: "exec explorer ms-availablenetworks:"
+        on_right: "exec explorer ms-settings:network-vpn"
+
+  systray:
+    type: "yasb.systray.SystrayWidget"
+    options:
+      class_name: "systray"
+      label_collapsed: "\uf107"
+      label_expanded: "\uf106"
+      label_position: "right"
+      icon_size: 14
+      pin_click_modifier: "alt"
+      show_unpinned: false
+      show_unpinned_button: true
+      show_in_popup: true
+      icons_per_row: 5
+      show_battery: false
+      show_volume: false
+      show_network: false
+      tooltip: true
+      use_hook: false
+      popup:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "#5b6078"
+        alignment: "right"
+        direction: "down"
+        offset_top: 6
+        offset_left: 0
+
+  volume:
+    type: "yasb.volume.VolumeWidget"
+    options:
+      label: "<span>{icon}</span> {level}"
+      label_alt: "{volume}"
+      callbacks:
+        on_right: "exec cmd.exe /c start ms-settings:sound"
+
+  battery:
+    type: "yasb.battery.BatteryWidget"
+    options:
+      label: "<span>{icon}</span> {percent}%"
+      label_alt: "time: {time_remaining}"
+      charging_options:
+        icon_format: "{charging_icon}"
+
+  power_menu:
+    type: "yasb.power_menu.PowerMenuWidget"
+    options:
+      label: "\uf011"
+      uptime: true
+      blur: false
+      blur_background: true
+      animation_duration: 200
+      button_row: 5
+      buttons:
+        shutdown: ["\uf011", "Shut Down"]
+        restart: ["\uead2", "Restart"]
+        signout: ["\uf2f5", "Sign out"]
+        hibernate: ["\uf28e", "Hibernate"]
+        sleep: ["\u23fe", "Sleep"]
+        cancel: ["", "Cancel"]

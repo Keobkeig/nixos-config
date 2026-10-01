@@ -1,0 +1,276 @@
+/* ==UserStyle==
+@name           Microsoft 365 - Catppuccin Macchiato
+@namespace      local.microsoft-365-macchiato
+@version        1.0.1
+@description    Catppuccin Macchiato tokens for Outlook and Microsoft Teams web apps.
+@author         Richie Xue
+@preprocessor   default
+==/UserStyle== */
+
+@-moz-document domain("outlook.office.com"),
+  domain("outlook.office365.com"),
+  domain("outlook.cloud.microsoft"),
+  domain("outlook.live.com"),
+  domain("teams.microsoft.com") {
+  :root,
+  body,
+  .fui-FluentProvider,
+  [data-theme],
+  [class*="theme"] {
+    color-scheme: dark !important;
+
+    --ctp-rosewater: #f4dbd6;
+    --ctp-flamingo: #f0c6c6;
+    --ctp-pink: #f5bde6;
+    --ctp-mauve: #c6a0f6;
+    --ctp-red: #ed8796;
+    --ctp-maroon: #ee99a0;
+    --ctp-peach: #f5a97f;
+    --ctp-yellow: #eed49f;
+    --ctp-green: #a6da95;
+    --ctp-teal: #8bd5ca;
+    --ctp-sky: #91d7e3;
+    --ctp-sapphire: #7dc4e4;
+    --ctp-blue: #8aadf4;
+    --ctp-lavender: #b7bdf8;
+    --ctp-text: #cad3f5;
+    --ctp-subtext1: #b8c0e0;
+    --ctp-subtext0: #a5adcb;
+    --ctp-overlay2: #939ab7;
+    --ctp-overlay1: #8087a2;
+    --ctp-overlay0: #6e738d;
+    --ctp-surface2: #5b6078;
+    --ctp-surface1: #494d64;
+    --ctp-surface0: #363a4f;
+    --ctp-base: #24273a;
+    --ctp-mantle: #1e2030;
+    --ctp-crust: #181926;
+
+    --colorNeutralForeground1: var(--ctp-text) !important;
+    --colorNeutralForeground1Hover: var(--ctp-text) !important;
+    --colorNeutralForeground1Pressed: var(--ctp-text) !important;
+    --colorNeutralForeground2: var(--ctp-subtext1) !important;
+    --colorNeutralForeground2Hover: var(--ctp-text) !important;
+    --colorNeutralForeground2Pressed: var(--ctp-text) !important;
+    --colorNeutralForeground3: var(--ctp-subtext0) !important;
+    --colorNeutralForegroundDisabled: var(--ctp-overlay0) !important;
+    --colorNeutralForegroundInverted: var(--ctp-crust) !important;
+
+    --colorNeutralBackground1: var(--ctp-base) !important;
+    --colorNeutralBackground1Hover: var(--ctp-surface0) !important;
+    --colorNeutralBackground1Pressed: var(--ctp-surface1) !important;
+    --colorNeutralBackground1Selected: var(--ctp-surface0) !important;
+    --colorNeutralBackground2: var(--ctp-mantle) !important;
+    --colorNeutralBackground2Hover: var(--ctp-surface0) !important;
+    --colorNeutralBackground2Pressed: var(--ctp-surface1) !important;
+    --colorNeutralBackground2Selected: var(--ctp-surface0) !important;
+    --colorNeutralBackground3: var(--ctp-crust) !important;
+    --colorNeutralBackground3Hover: var(--ctp-surface0) !important;
+    --colorNeutralBackground4: var(--ctp-surface0) !important;
+    --colorNeutralBackground5: var(--ctp-surface1) !important;
+    --colorNeutralBackground6: var(--ctp-surface2) !important;
+    --colorNeutralBackgroundInverted: var(--ctp-text) !important;
+
+    --colorNeutralStroke1: var(--ctp-surface1) !important;
+    --colorNeutralStroke1Hover: var(--ctp-surface2) !important;
+    --colorNeutralStroke1Pressed: var(--ctp-overlay0) !important;
+    --colorNeutralStroke2: var(--ctp-surface0) !important;
+    --colorNeutralStroke3: var(--ctp-surface1) !important;
+
+    --colorBrandBackground: var(--ctp-blue) !important;
+    --colorBrandBackgroundHover: var(--ctp-sapphire) !important;
+    --colorBrandBackgroundPressed: var(--ctp-lavender) !important;
+    --colorBrandBackgroundSelected: var(--ctp-sapphire) !important;
+    --colorBrandForeground1: var(--ctp-blue) !important;
+    --colorBrandForeground2: var(--ctp-sapphire) !important;
+    --colorCompoundBrandForeground1: var(--ctp-blue) !important;
+    --colorCompoundBrandForeground1Hover: var(--ctp-sapphire) !important;
+    --colorCompoundBrandStroke: var(--ctp-blue) !important;
+    --colorCompoundBrandStrokeHover: var(--ctp-sapphire) !important;
+
+    --colorStatusDangerForeground1: var(--ctp-red) !important;
+    --colorStatusWarningForeground1: var(--ctp-yellow) !important;
+    --colorStatusSuccessForeground1: var(--ctp-green) !important;
+
+    --themePrimary: var(--ctp-blue) !important;
+    --themeDarkAlt: var(--ctp-sapphire) !important;
+    --themeDark: var(--ctp-lavender) !important;
+    --themeDarker: var(--ctp-mauve) !important;
+    --themeSecondary: var(--ctp-sky) !important;
+    --themeTertiary: var(--ctp-surface2) !important;
+    --themeLight: var(--ctp-surface1) !important;
+    --themeLighter: var(--ctp-surface0) !important;
+    --themeLighterAlt: var(--ctp-mantle) !important;
+    --neutralPrimary: var(--ctp-text) !important;
+    --neutralPrimaryAlt: var(--ctp-subtext1) !important;
+    --neutralSecondary: var(--ctp-subtext0) !important;
+    --neutralSecondaryAlt: var(--ctp-overlay2) !important;
+    --neutralTertiary: var(--ctp-overlay1) !important;
+    --neutralTertiaryAlt: var(--ctp-overlay0) !important;
+    --neutralQuaternary: var(--ctp-surface2) !important;
+    --neutralQuaternaryAlt: var(--ctp-surface1) !important;
+    --neutralLight: var(--ctp-surface0) !important;
+    --neutralLighter: var(--ctp-mantle) !important;
+    --neutralLighterAlt: var(--ctp-crust) !important;
+    --black: var(--ctp-text) !important;
+    --white: var(--ctp-base) !important;
+  }
+
+  [role="dialog"],
+  [role="menu"],
+  [role="listbox"],
+  [role="tooltip"] {
+    background-color: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  [role="menuitem"]:hover,
+  [role="option"]:hover,
+  [role="option"][aria-selected="true"] {
+    background-color: var(--ctp-surface0) !important;
+  }
+
+  input,
+  textarea,
+  [contenteditable="true"] {
+    caret-color: var(--ctp-rosewater) !important;
+  }
+
+  :focus-visible {
+    outline-color: var(--ctp-sapphire) !important;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--ctp-blue) 45%, transparent) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--ctp-mantle);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--ctp-surface2);
+    border: 2px solid var(--ctp-mantle);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--ctp-overlay0);
+  }
+
+  [data-tid="app-layout-area--app-bar"],
+  [data-tid="app-layout-area--rail"],
+  [data-tid="app-bar"],
+  [class*="leftRail"],
+  [class*="appBar"] {
+    background-color: var(--ctp-crust) !important;
+  }
+
+  body::before {
+    background: linear-gradient(
+      90deg,
+      var(--ctp-mauve),
+      var(--ctp-blue),
+      var(--ctp-sapphire)
+    );
+    content: "";
+    height: 2px;
+    left: 0;
+    pointer-events: none;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 2147483647;
+  }
+}
+
+@-moz-document domain("outlook.office.com"),
+  domain("outlook.office365.com"),
+  domain("outlook.cloud.microsoft"),
+  domain("outlook.live.com") {
+  html,
+  body,
+  #app,
+  [role="application"],
+  [role="main"],
+  [role="navigation"],
+  [role="complementary"],
+  [data-app-section] {
+    background-color: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  header,
+  nav,
+  [role="banner"],
+  [role="toolbar"],
+  [aria-label*="Navigation"],
+  [aria-label*="navigation"] {
+    background-color: var(--ctp-crust) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  [role="tree"],
+  [role="grid"],
+  [role="list"],
+  [role="listbox"] {
+    background-color: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  [aria-selected="true"],
+  [aria-current="page"] {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-blue) !important;
+  }
+}
+
+@-moz-document domain("teams.microsoft.com") {
+  html,
+  body,
+  #app,
+  [role="application"],
+  [role="main"],
+  [role="navigation"],
+  [data-tid^="app-layout-area--"] {
+    background-color: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  [data-tid="app-layout-area--app-bar"],
+  [data-tid="app-layout-area--rail"],
+  [data-tid="app-layout-area--header"],
+  [data-tid*="left-rail"],
+  [data-tid*="side-panel"],
+  [role="banner"],
+  [role="toolbar"] {
+    background-color: var(--ctp-crust) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  [data-tid*="chat-pane"],
+  [data-tid*="message-pane"],
+  [data-tid*="channel-pane"],
+  [role="list"],
+  [role="tree"] {
+    background-color: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  [aria-selected="true"],
+  [aria-current="page"] {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-blue) !important;
+  }
+}
