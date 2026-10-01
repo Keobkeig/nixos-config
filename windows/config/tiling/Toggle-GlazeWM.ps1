@@ -40,13 +40,38 @@ if ($glazeProcess) {
         throw "GlazeWM returned exit code $($stopProcess.ExitCode) while stopping."
     }
 
+    $stopDeadline = (Get-Date).AddSeconds(15)
+    do {
+        Start-Sleep -Milliseconds 250
+        $glazeProcess = Get-Process -Name glazewm -ErrorAction SilentlyContinue
+    } while ($glazeProcess -and (Get-Date) -lt $stopDeadline)
+
+    if ($glazeProcess) {
+        throw 'GlazeWM did not exit within 15 seconds.'
+    }
+
     'off'
     exit 0
 }
 
-Start-Process -FilePath $glazePath -ArgumentList @(
-    'start'
-    "--config=$configPath"
-)
+$startDeadline = (Get-Date).AddSeconds(90)
+$arguments = 'start --config="{0}"' -f $configPath
 
-'on'
+do {
+    $startedProcess = Start-Process `
+        -FilePath $glazePath `
+        -ArgumentList $arguments `
+        -PassThru
+
+    Start-Sleep -Seconds 2
+    $startedProcess.Refresh()
+
+    if (-not $startedProcess.HasExited) {
+        'on'
+        exit 0
+    }
+
+    Start-Sleep -Seconds 2
+} while ((Get-Date) -lt $startDeadline)
+
+throw 'GlazeWM could not start within 90 seconds.'

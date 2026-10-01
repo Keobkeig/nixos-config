@@ -111,13 +111,8 @@ widgets:
       app_list:
         - { icon: "\uf0f3", launch: "notification_center", name: "Notifications" }
         - { icon: "\uf0ad", launch: "quick_settings", name: "Quick Settings" }
-        - { icon: "\uf002", launch: "search", name: "Windows Search" }
         - { icon: "\uf489", launch: "wt", name: "Windows Terminal" }
         - { icon: "\uf269", launch: '"C:\Program Files\Zen Browser\zen.exe"', name: "Zen" }
-        - { icon: "\uea60", launch: '"C:\Program Files\Microsoft VS Code\Code.exe"', name: "VS Code" }
-        - { icon: "\uee9c", launch: '"__USERPROFILE__\\AppData\\Local\\Programs\\Zed\\zed.exe"', name: "Zed" }
-        - { icon: "\uf0e0", launch: 'explorer.exe "__USERPROFILE__\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Macchiato Apps\\Outlook (Macchiato).lnk"', name: "Outlook" }
-        - { icon: "\uf0c0", launch: 'explorer.exe "__USERPROFILE__\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Macchiato Apps\\Teams (Macchiato).lnk"', name: "Teams" }
 
   glazewm_workspaces:
     type: "glazewm.workspaces.GlazewmWorkspacesWidget"
