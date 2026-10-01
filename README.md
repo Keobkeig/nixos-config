@@ -1,15 +1,32 @@
-# NixOS Configuration
+# Cross-Platform System Configuration
 
-A reproducible NixOS configuration using Flakes + Home Manager with niri window manager, DankMaterialShell, CachyOS kernel, and Catppuccin theming.
+A reproducible macOS, NixOS, NixOS-WSL, and native Windows configuration built
+around one shared Unix Home Manager profile.
 
 ## Features
 
 - **Window Manager**: niri (Wayland scrolling compositor)
 - **Desktop Shell**: DankMaterialShell (replaces waybar, mako, fuzzel, swaylock, swayidle)
 - **Kernel**: CachyOS patches for performance
-- **Theme**: Catppuccin Mocha throughout
+- **Theme**: Catppuccin Macchiato throughout
 - **Shell**: Zsh + Powerlevel10k + Tmux
 - **Editor**: Neovim (symlinked config for mutability)
+
+## Profile Architecture
+
+All Unix-like targets import `home/profiles/core.nix`. The core owns Git, Zsh,
+Neovim, tmux, Herdr, CLI tools, language toolchains, LSPs, and shared
+Catppuccin behavior. Platform profiles add only their unique responsibilities:
+
+| Profile | Flake output | Unique responsibilities |
+| --- | --- | --- |
+| macOS | `darwinConfigurations.richie-mpb` | nix-darwin, Aerospace, macOS paths, keychain integration |
+| NixOS desktop | `nixosConfigurations.workstation` | Hardware, Niri, DMS, Stylix, GUI apps, gaming and services |
+| NixOS-WSL | `nixosConfigurations.wsl` | WSL integration, headless security tools and Windows interoperability |
+| Native Windows | `windows\Install-WindowsSetup.ps1` | YASB, GlazeWM, AutoHotkey and Windows application integration |
+
+Shared package sets live in `lib/package-sets.nix`. Native Windows remains
+PowerShell-managed because Nix does not manage the Windows host directly.
 
 ## Fresh Install
 
@@ -99,6 +116,21 @@ sudo nixos-rebuild test --flake ~/nixos-config#workstation
 sudo nixos-rebuild build --flake ~/nixos-config#workstation
 ```
 
+### Rebuild NixOS-WSL
+
+```bash
+# From Windows
+wsl -d NixOS
+
+# From NixOS-WSL
+sudo nixos-rebuild switch --flake path:$HOME/nixos-config#wsl
+```
+
+The WSL host reuses the shell, terminal tools, language toolchains, Git, tmux,
+Herdr, Neovim, and Catppuccin configuration. It intentionally excludes the
+bootloader, kernel, GPU, display-manager, Wayland, audio, Bluetooth, gaming,
+and desktop application modules used by the physical workstation.
+
 ### Rebuild the Windows Shell
 
 The portable Windows configuration under [`windows/`](windows/README.md)
@@ -148,11 +180,13 @@ sudo nix-collect-garbage --delete-older-than 14d
 
 Edit the appropriate module:
 
-- **CLI tools**: `modules/packages/cli.nix`
-- **Languages**: `modules/packages/languages.nix`
+- **Shared Unix CLI tools and languages**: `lib/package-sets.nix`
+- **Shared shell/editor behavior**: `home/profiles/core.nix`
+- **macOS-only behavior**: `home/profiles/darwin.nix`
+- **NixOS desktop-only behavior**: `home/profiles/nixos-desktop.nix`
+- **WSL-only behavior**: `home/profiles/wsl.nix`
 - **Security tools**: `modules/packages/security.nix`
 - **GUI apps**: `modules/packages/gui.nix`
-- **User packages**: `home/default.nix`
 
 Then rebuild:
 

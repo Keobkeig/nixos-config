@@ -1,29 +1,13 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
+let
+  packageSets = import ../../lib/package-sets.nix { inherit pkgs; };
+in
 {
-  environment.systemPackages = with pkgs; [
-    # Binary analysis
-    binwalk
-    hexyl
-
-    # OSINT
-    sherlock
-
-    # Network
-    nmap # also provides ncat; there is no separate `ncat` attribute
-    wireshark
-    tcpdump
-
-    # Password cracking
-    john
-    hashcat
-
-    # Web
-    gobuster
-    ffuf
-
-    # Misc
-    radare2
-    ghidra
-  ];
+  environment.systemPackages =
+    packageSets.headlessSecurity
+    ++ (with pkgs; [
+      wireshark
+      ghidra
+    ]);
 }

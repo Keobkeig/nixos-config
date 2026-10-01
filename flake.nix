@@ -19,7 +19,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    catppuccin.url = "github:catppuccin/nix";
+    catppuccin-bat = {
+      url = "github:catppuccin/bat/6810349b28055dce54076712fc05fc68da4b8ec0";
+      flake = false;
+    };
+
+    catppuccin-btop = {
+      url = "github:catppuccin/btop/f437574b600f1c6d932627050b15ff5153b58fa3";
+      flake = false;
+    };
 
     spicetify-nix = {
       url = "github:Gerg-L/spicetify-nix";
@@ -30,6 +38,11 @@
 
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/2605.7.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -78,10 +91,10 @@
       stylix,
       nix-cachyos-kernel,
       dms,
-      catppuccin,
       spicetify-nix,
       zen-browser,
       nix-index-database,
+      nixos-wsl,
       herdr,
       ...
     }@inputs:
@@ -109,6 +122,10 @@
       hostConfigs = {
         workstation = {
           isWork = false;
+        };
+        wsl = {
+          isWork = false;
+          sessionizerPaths = [ "~/repos" ];
         };
         # Keyed by hostname so `nh darwin switch` / `darwin-rebuild` need no
         # -H flag, matching how workstation already works.
@@ -173,6 +190,7 @@
           # import-from-derivation and would have required building Linux
           # derivations mid-evaluation.
           workstation = self.nixosConfigurations.workstation.config.system.build.toplevel;
+          wsl = self.nixosConfigurations.wsl.config.system.build.toplevel;
         };
       };
 
@@ -198,7 +216,32 @@
             home-manager.extraSpecialArgs = {
               inherit inputs;
               userConfig = userConfigFor "workstation";
-              isNixOS = true;
+              profile = "nixos-desktop";
+            };
+            home-manager.users.${username} = import ./home;
+          }
+        ];
+      };
+
+      # NixOS-WSL (integrated Home Manager, CLI-only)
+      nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs;
+          userConfig = userConfigFor "wsl";
+        };
+        modules = [
+          nixos-wsl.nixosModules.default
+          ./hosts/wsl
+
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "bak";
+            home-manager.extraSpecialArgs = {
+              inherit inputs;
+              userConfig = userConfigFor "wsl";
+              profile = "wsl";
             };
             home-manager.users.${username} = import ./home;
           }
@@ -226,7 +269,7 @@
             home-manager.extraSpecialArgs = {
               inherit inputs;
               userConfig = userConfigFor "richie-mpb";
-              isNixOS = false;
+              profile = "darwin";
             };
             home-manager.users.${username} = import ./home;
           }

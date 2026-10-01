@@ -1,8 +1,8 @@
 { ... }:
 
 {
-  # Linux-only Stylix opt-outs. This file is imported only under isNixOS, because
-  # the Stylix module is not present on macOS and these options would not exist.
+  # NixOS desktop Stylix opt-outs. The Darwin and WSL profiles do not import
+  # Stylix, so these options only exist in the graphical NixOS profile.
   stylix.targets = {
     # lazygit keeps its writable out-of-store config (runtime `o` edits). Stylix
     # would set programs.lazygit.settings, which flips on Home Manager's own

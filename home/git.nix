@@ -99,7 +99,7 @@ in
     };
   };
 
-  # gh CLI is installed via modules/packages/cli.nix.
+  # gh CLI is installed by the shared Unix Home Manager profile.
   # Config is managed as a writable out-of-store symlink so `gh config set`,
   # `gh alias set`, etc. work at runtime. (programs.gh would write a read-only
   # store path, breaking those commands.)

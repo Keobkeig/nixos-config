@@ -23,9 +23,8 @@
     ../../modules/desktop/greetd.nix
     ../../modules/desktop/xdg.nix
 
-    # Packages
-    ../../modules/packages/cli.nix
-    ../../modules/packages/languages.nix
+    # Packages unique to the graphical workstation. The portable Unix
+    # toolchain is owned by Home Manager's shared core profile.
     ../../modules/packages/security.nix
     ../../modules/packages/gui.nix
 
