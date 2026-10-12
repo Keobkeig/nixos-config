@@ -1,5 +1,8 @@
 [CmdletBinding()]
 param(
+    [ValidateSet('Work', 'Personal')]
+    [string] $Role = 'Work',
+
     [switch] $InstallPackages,
     [switch] $ImportWindotsWallpapers,
     [switch] $KeepTaskbarVisible
@@ -44,6 +47,34 @@ function Copy-DirectoryContents {
     New-Item -ItemType Directory -Path $Destination -Force | Out-Null
     Get-ChildItem -LiteralPath $Source -Force |
         Copy-Item -Destination $Destination -Recurse -Force
+}
+
+function Select-RoleBlocks {
+    param(
+        [Parameter(Mandatory)]
+        [string] $Text
+    )
+
+    # Template lines between '# @profile <role>' and '# @end' are kept only
+    # when <role> matches -Role. The marker lines themselves are dropped.
+    $blockRole = $null
+    $kept = foreach ($line in $Text -split "`r?`n") {
+        if ($line -match '^\s*#\s*@profile\s+(\w+)\s*$') {
+            $blockRole = $Matches[1]
+            continue
+        }
+
+        if ($line -match '^\s*#\s*@end\s*$') {
+            $blockRole = $null
+            continue
+        }
+
+        if (-not $blockRole -or $blockRole -eq $Role) {
+            $line
+        }
+    }
+
+    $kept -join "`n"
 }
 
 function Backup-Directory {
@@ -174,6 +205,8 @@ if ($InstallPackages) {
         throw 'winget is required when -InstallPackages is used.'
     }
 
+    Install-WingetPackage -Id 'Microsoft.PowerShell'
+    Install-WingetPackage -Id 'DEVCOM.JetBrainsMonoNerdFont'
     Install-WingetPackage -Id 'AmN.yasb'
     Install-WingetPackage -Id 'glzr-io.glazewm'
     Install-WingetPackage -Id 'AutoHotkey.AutoHotkey'
@@ -223,6 +256,7 @@ $yamlUserProfile = $env:USERPROFILE.Replace('\', '\\')
 $yasbConfig = Get-Content `
     -LiteralPath (Join-Path $configRoot 'yasb\config.yaml.template') `
     -Raw
+$yasbConfig = Select-RoleBlocks -Text $yasbConfig
 $yasbConfig = $yasbConfig.Replace('__USERPROFILE__', $yamlUserProfile)
 Set-Content `
     -LiteralPath (Join-Path $yasbTarget 'config.yaml') `
@@ -235,9 +269,11 @@ Copy-DirectoryContents `
 Copy-DirectoryContents `
     -Source (Join-Path $configRoot 'tiling') `
     -Destination $tilingTarget
-Copy-DirectoryContents `
-    -Source (Join-Path $configRoot 'microsoft-web-macchiato') `
-    -Destination $microsoftWebTarget
+if ($Role -eq 'Work') {
+    Copy-DirectoryContents `
+        -Source (Join-Path $configRoot 'microsoft-web-macchiato') `
+        -Destination $microsoftWebTarget
+}
 
 $wallpaperTarget = Join-Path $env:USERPROFILE 'Pictures\Wallpapers'
 New-Item -ItemType Directory -Path $wallpaperTarget -Force | Out-Null
@@ -284,7 +320,7 @@ $edgePath = $edgeCandidates |
     Where-Object { Test-Path -LiteralPath $_ } |
     Select-Object -First 1
 
-if ($edgePath) {
+if ($Role -eq 'Work' -and $edgePath) {
     $appShortcutDirectory = Join-Path $env:APPDATA (
         'Microsoft\Windows\Start Menu\Programs\Macchiato Apps'
     )
@@ -352,6 +388,7 @@ if (-not (Get-Process -Name yasb -ErrorAction SilentlyContinue)) {
 $tilingState = & (Join-Path $tilingTarget 'Toggle-GlazeWM.ps1') -StatusOnly
 
 [pscustomobject]@{
+    Role = $Role
     YasbConfig = $yasbTarget
     GlazeWMConfig = $glazeTarget
     TilingController = $tilingTarget

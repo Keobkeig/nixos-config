@@ -34,6 +34,18 @@ The installer:
 6. Applies `doom-catppuccin-l3.png` when that wallpaper is available.
 7. Auto-hides the Windows taskbar unless `-KeepTaskbarVisible` is supplied.
 
+On a personal machine, add `-Role Personal`. It drops the Outlook meeting,
+VPN status, and battery widgets and the Microsoft 365 Edge wrappers. It also
+adds bar launchers for VS Code, Obsidian, Spotify, Discord, and Steam. Template
+lines between `# @profile <role>` and `# @end` are kept only for that role.
+
+```powershell
+.\windows\Install-WindowsSetup.ps1 -Role Personal -InstallPackages -ImportWindotsWallpapers
+```
+
+`-InstallPackages` also installs PowerShell 7 and JetBrainsMono Nerd Font,
+which the scripts and bar depend on.
+
 Without package or wallpaper installation:
 
 ```powershell

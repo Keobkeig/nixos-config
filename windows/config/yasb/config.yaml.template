@@ -34,15 +34,21 @@ bars:
         - "glazewm_workspaces"
         - "media"
       center:
+        # @profile work
         - "outlook_meeting"
+        # @end
         - "clock"
       right:
         - "wallpapers"
         - "window_switcher"
+        # @profile work
         - "network_vpn"
+        # @end
         - "systray"
         - "volume"
+        # @profile work
         - "battery"
+        # @end
         - "power_menu"
 
 widgets:
@@ -113,6 +119,13 @@ widgets:
         - { icon: "\uf0ad", launch: "quick_settings", name: "Quick Settings" }
         - { icon: "\uf489", launch: "wt", name: "Windows Terminal" }
         - { icon: "\uf269", launch: '"C:\Program Files\Zen Browser\zen.exe"', name: "Zen" }
+        # @profile personal
+        - { icon: "\uf121", launch: "\"__USERPROFILE__\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe\"", name: "VS Code" }
+        - { icon: "\uf02d", launch: "\"__USERPROFILE__\\AppData\\Local\\Programs\\Obsidian\\Obsidian.exe\"", name: "Obsidian" }
+        - { icon: "\uf1bc", launch: "\"__USERPROFILE__\\AppData\\Roaming\\Spotify\\Spotify.exe\"", name: "Spotify" }
+        - { icon: "\uf392", launch: "\"__USERPROFILE__\\AppData\\Local\\Discord\\Update.exe\" --processStart Discord.exe", name: "Discord" }
+        - { icon: "\uf1b6", launch: '"C:\Program Files (x86)\Steam\steam.exe"', name: "Steam" }
+        # @end
 
   glazewm_workspaces:
     type: "glazewm.workspaces.GlazewmWorkspacesWidget"
@@ -171,6 +184,7 @@ widgets:
       direction: "down"
       distance: 6
 
+  # @profile work
   outlook_meeting:
     type: "yasb.custom.CustomWidget"
     options:
@@ -189,6 +203,7 @@ widgets:
       callbacks:
         on_left: 'exec explorer.exe "__USERPROFILE__\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Macchiato Apps\\Outlook Calendar (Macchiato).lnk"'
         on_right: 'exec explorer.exe "__USERPROFILE__\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Macchiato Apps\\Outlook Calendar (Macchiato).lnk"'
+  # @end
 
   wallpapers:
     type: "yasb.wallpapers.WallpapersWidget"
@@ -224,6 +239,7 @@ widgets:
       callbacks:
         on_left: "toggle_window_switcher"
 
+  # @profile work
   network_vpn:
     type: "yasb.custom.CustomWidget"
     options:
@@ -241,6 +257,7 @@ widgets:
       callbacks:
         on_left: "exec explorer ms-availablenetworks:"
         on_right: "exec explorer ms-settings:network-vpn"
+  # @end
 
   systray:
     type: "yasb.systray.SystrayWidget"
@@ -278,6 +295,7 @@ widgets:
       callbacks:
         on_right: "exec cmd.exe /c start ms-settings:sound"
 
+  # @profile work
   battery:
     type: "yasb.battery.BatteryWidget"
     options:
@@ -285,6 +303,7 @@ widgets:
       label_alt: "time: {time_remaining}"
       charging_options:
         icon_format: "{charging_icon}"
+  # @end
 
   power_menu:
     type: "yasb.power_menu.PowerMenuWidget"
