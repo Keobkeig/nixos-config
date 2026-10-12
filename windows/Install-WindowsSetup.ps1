@@ -30,7 +30,9 @@ function Install-WingetPackage {
         --accept-package-agreements `
         --accept-source-agreements
 
-    if ($LASTEXITCODE -ne 0) {
+    # Already installed: 0x8A15002B (no applicable upgrade) or 0x8A150061.
+    $alreadyInstalled = @(-1978335189, -1978335135)
+    if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -notin $alreadyInstalled) {
         throw "winget failed to install '$Id' with exit code $LASTEXITCODE."
     }
 }
